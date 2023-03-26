@@ -1,70 +1,28 @@
-# Getting Started with Create React App
+# Proyecto Frontend React - Gestion de Capital Humano UTN-FRT
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este es un proyecto frontend desarrollado para la materia de Gestion de Capital Humano de la UTN-FRT. El objetivo del proyecto es desarrollar una aplicación web que permita gestionar los recursos humanos de una empresa de forma eficiente.
 
-## Available Scripts
+## Inicialización del proyecto
 
-In the project directory, you can run:
+Para inicializar el proyecto, siga los siguientes pasos:
 
-### `npm start`
+1. Clone el repositorio.
+2. Abra una terminal y navegue a la carpeta raíz del proyecto.
+3. Ejecute el comando `yarn` o `npm i` para instalar las dependencias.
+4. Una vez finalizada la instalación, ejecute el comando `yarn start` o `npm start` para iniciar la aplicación. La aplicación se ejecutará en el puerto 3000 del servidor local.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Usuarios
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+La aplicación cuenta con dos usuarios hardcodeados:
 
-### `npm test`
+- Usuario1: admin -> contraseña: admin
+- Usuario2: user -> contraseña: user
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Características de la aplicación
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- La aplicación está desarrollada en React.
+- Se utiliza React Router V6 para la navegación entre páginas.
+- Los estilos se gestionan con CSS una librería llamada Styled Components.
+- La aplicación cuenta con un sistema de autenticación básico. Los usuarios se almacenan en un archivo JSON y se validan en el frontend guardandolos en el localStorage del navegador.
+- Se utiliza Axios para realizar peticiones HTTP al backend. (a desarrollar los endpoints)
+- La aplicación está diseñada de forma responsive para adaptarse a diferentes tamaños de pantalla.
