@@ -33,7 +33,7 @@ const App = () => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+const ruta = "/capitalh";
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -73,7 +73,7 @@ const App = () => {
   return (
     <Routes>
       <Route
-        path={"/"}
+        path={ruta}
         element={
           <Login
             user={user}

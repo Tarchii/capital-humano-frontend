@@ -1,6 +1,7 @@
 {
   "name": "capital-humano-frontend",
   "version": "0.1.0",
+  "homepage": "http://lenovo-guille/capitalh/",
   "private": true,
   "dependencies": {
     "@tanstack/react-query": "^4.26.1",

@@ -1,13 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import AppLayout from '../../components/layout/AppLayout';
+import axios from '../../config/axios';
 
 const ObraSocial = () => {
+    const [data,setData]= useState([])
+    const getData = async ()=>{
+        try {
+            const info = await axios.get('/users')
+            setData(info.data.users)
+            console.log(info.data.users);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    useEffect(()=>{
+    
+            getData()
+        
+    
+    },[])
     return (
         <AppLayout>
             <Container>
                 <PageTitle>
                     Obras Sociales
+                    {data.length > 0 && data.map((user,index)=>(
+                        <p>{user.nombre}</p>
+                    ))
+                    }
                 </PageTitle>
             </Container>
         </AppLayout>
