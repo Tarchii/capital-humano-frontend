@@ -1,11 +1,28 @@
 import { Button, Modal, Table } from 'antd';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { UploadOutlined, DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import axios from '../../config/axios';
 
 const TableEmployees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [data,setData]= useState([])
 
+    const getData = async ()=>{
+        try {
+            const info = await axios.get('/empleados')
+            setData(info.data.empleados)
+         
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    useEffect(()=>{
+    
+            getData()
+        
+    
+    },[])
     return (
         <>
             <Header>
@@ -14,7 +31,7 @@ const TableEmployees = () => {
                 </PageTitle>
                 <Button onClick={() => setIsModalOpen(true)}>Agregar Empleado</Button>
             </Header>
-            <Table dataSource={dataSource} columns={columns} />
+            <Table dataSource={data.length > 0 && data} columns={columns} />
             <Modal visible={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => setIsModalOpen(false)}>
                 <h1>Modal</h1>
             </Modal>

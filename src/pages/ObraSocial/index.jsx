@@ -7,9 +7,9 @@ const ObraSocial = () => {
     const [data,setData]= useState([])
     const getData = async ()=>{
         try {
-            const info = await axios.get('/users')
-            setData(info.data.users)
-            console.log(info.data.users);
+            const info = await axios.get('/obraSocial')
+            setData(info.data.obraSociales)
+         
         } catch (error) {
             console.log(error.message);
         }
@@ -26,7 +26,7 @@ const ObraSocial = () => {
                 <PageTitle>
                     Obras Sociales
                     {data.length > 0 && data.map((user,index)=>(
-                        <p>{user.nombre}</p>
+                        <p>{user.nombre.toUpperCase()}</p>
                     ))
                     }
                 </PageTitle>
