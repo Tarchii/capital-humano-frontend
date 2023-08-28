@@ -116,7 +116,7 @@ const TableEmployees = () => {
             <div style={{ margin: "20px" }}>
               
                 <FormEmployess
-                  setIsModalOpen={setIsModalOpen}
+                 closeModal={closeModal}
                   form={form}
                   getData={getData}
                 />
@@ -127,7 +127,7 @@ const TableEmployees = () => {
           <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
             <div style={{ margin: "20px" }}>
               <FormEmployess
-                setIsModalOpen={setIsModalOpen}
+                closeModal={closeModal}
                 form={form}
                 getData={getData}
                 employeeSelected={employeeSelected}

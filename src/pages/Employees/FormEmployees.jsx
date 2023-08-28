@@ -4,7 +4,7 @@ import { Option } from "antd/es/mentions";
 import { toast } from "react-toastify";
 import axios from "../../config/axios";
 
-const FormEmployess = ({ setIsModalOpen, form,getData, employeeSelected }) => {
+const FormEmployess = ({ closeModal, form,getData, employeeSelected}) => {
 
 
   const onFinish = async (values) => {
@@ -12,7 +12,7 @@ const FormEmployess = ({ setIsModalOpen, form,getData, employeeSelected }) => {
 
      try {
        const respuesta = await axios.post("/empleados", values);
-       setIsModalOpen(false);
+       closeModal();
        getData();
        form.resetFields(); // Limpiar campos
        toast.success("Empleado registrado con éxito!");
@@ -22,9 +22,8 @@ const FormEmployess = ({ setIsModalOpen, form,getData, employeeSelected }) => {
  }else{
     
     try {
-        
         const respuesta = await axios.put(`/empleados/${employeeSelected._id}`, values);
-        setIsModalOpen(false);
+        closeModal()
         getData();
         form.resetFields(); // Limpiar campos
         toast.success("Empleado modificado con éxito!");
