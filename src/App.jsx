@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Lobby from "./pages/Lobby";
 import { notification } from "antd";
-import { Routes, Route, Navigate } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "./utils/constants";
 import ObraSocial from "./pages/ObraSocial";
@@ -12,6 +12,7 @@ import Members from "./pages/Members";
 import Areas from "./pages/Areas";
 import Employees from "./pages/Employees";
 import Sindicatos from "./pages/Sindicatos";
+
 
 // const PrivateRoute = ({ children, ...rest }) => (
 //   <Route
@@ -71,6 +72,7 @@ const ruta = "/capitalh";
   };
 
   return (
+  
     <Routes>
       <Route
         path={ruta}
@@ -149,6 +151,7 @@ const ruta = "/capitalh";
         }
       />
     </Routes>
+ 
   );
 };
 

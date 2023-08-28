@@ -1,12 +1,17 @@
-import { Button, Modal, Table } from 'antd';
+import { Button, Form, Modal, Table } from 'antd';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { UploadOutlined, DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import axios from '../../config/axios';
+import FormEmployess from './FormEmployees';
+import ViewDetails from './ViewDetails';
 
 const TableEmployees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data,setData]= useState([])
+    const [form] = Form.useForm(); // Instancia del formulario
+    const [employeeSelected, setEmployeeSelected] = useState(undefined)
+    const [modeEdition, setModeEdition] = useState(false)
 
     const getData = async ()=>{
         try {
@@ -18,152 +23,127 @@ const TableEmployees = () => {
         }
     }
     useEffect(()=>{
-    
-            getData()
-        
-    
+        getData()
     },[])
-    return (
-        <>
-            <Header>
-                <PageTitle>
-                    Empleados
-                </PageTitle>
-                <Button onClick={() => setIsModalOpen(true)}>Agregar Empleado</Button>
-            </Header>
-            <Table dataSource={data.length > 0 && data} columns={columns} />
-            <Modal visible={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => setIsModalOpen(false)}>
-                <h1>Modal</h1>
-            </Modal>
-        </>
-    )
-}
 
-const dataSource = [
-    {
-        key: '1',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '2',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '3',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '4',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '5',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '6',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-    {
-        key: '7',
-        legajo: '45189',
-        apellido: 'Tarchini',
-        nombre: 'Franco',
-        dni: '40000889',
-        domicilio: 'Av. Rivadavia 1234',
-
-    },
-];
-
-const columns = [
-    {
-        title: 'Legajo',
-        dataIndex: 'legajo',
-        key: 'legajo',
-    },
-    {
-        title: 'Apellido',
-        dataIndex: 'apellido',
-        key: 'apellido',
-    },
-    {
-        title: 'Nombre',
-        dataIndex: 'nombre',
-        key: 'nombre',
-    },
-    {
-        title: 'DNI',
-        dataIndex: 'dni',
-        key: 'dni',
-    },
-    {
-        title: 'Domicilio',
-        dataIndex: 'domicilio',
-        key: 'domicilio',
-    },
-    {
-        title: 'Ver Detalles',
-        dataIndex: 'verDetails',
-        key: 'verDetalles',
-        render: () => <CenteredButton>
-            <Button type='primary' shape='circle'><EyeOutlined /></Button>
-        </CenteredButton>
-    },
-    {
-        title: 'Editar',
-        dataIndex: 'editar',
-        key: 'editar',
-        render: () => <CenteredButton>
-            <Button shape='circle'><EditOutlined /></Button>
-        </CenteredButton>
-    },
-    {
-        title: 'Eliminar',
-        dataIndex: 'eliminar',
-        key: 'eliminar',
-        render: () => <CenteredButton>
-            <Button danger shape='circle'><DeleteOutlined /></Button>
-        </CenteredButton>
-    },
-    {
-        title: 'Agregar Foto',
-        dataIndex: 'agregarFoto',
-        key: 'agregarFoto',
-        render: () => <CenteredButton>
-            <Button shape='circle'><UploadOutlined /></Button>
-        </CenteredButton>
+    const closeModal = ()=>{
+        setIsModalOpen(false)
+        form.resetFields();
+        setEmployeeSelected(undefined)
+        setModeEdition(false)
     }
-];
+
+    const ViewDetailsEmployee = (employee)=>{
+        setEmployeeSelected(employee)
+        setIsModalOpen(true)
+    }
+
+    const editEmployee = (employee)=>{
+        form.setFieldsValue(employee);
+        setEmployeeSelected(employee)
+        setIsModalOpen(true)
+        setModeEdition(true)
+    }
+    const columns = [
+        {
+            title: 'Legajo',
+            dataIndex: 'legajo',
+            key: 'legajo',
+        },
+        {
+            title: 'Apellido',
+            dataIndex: 'apellido',
+            key: 'apellido',
+        },
+        {
+            title: 'Nombre',
+            dataIndex: 'nombre',
+            key: 'nombre',
+        },
+        {
+            title: 'DNI',
+            dataIndex: 'dni',
+            key: 'dni',
+        },
+        {
+            title: 'Domicilio',
+            dataIndex: 'domicilio',
+            key: 'domicilio',
+        },
+        {
+            title: 'Ver Detalles',
+            dataIndex: 'verDetails',
+            key: 'verDetalles',
+            render: (text,record) => <CenteredButton>
+                <Button type='primary' shape='circle' onClick={() => ViewDetailsEmployee(record)}><EyeOutlined /></Button>
+            </CenteredButton>
+        },
+        {
+            title: 'Editar',
+            dataIndex: 'editar',
+            key: 'editar',
+            render: (text,record) => <CenteredButton>
+                <Button shape='circle' onClick={() => editEmployee(record)}><EditOutlined /></Button>
+            </CenteredButton>
+        },
+        {
+            title: 'Eliminar',
+            dataIndex: 'eliminar',
+            key: 'eliminar',
+            render: () => <CenteredButton>
+                <Button danger shape='circle'><DeleteOutlined /></Button>
+            </CenteredButton>
+        },
+        {
+            title: 'Agregar Foto',
+            dataIndex: 'agregarFoto',
+            key: 'agregarFoto',
+            render: () => <CenteredButton>
+                <Button shape='circle'><UploadOutlined /></Button>
+            </CenteredButton>
+        }
+    ];
+
+    return (
+      <>
+        <Header>
+          <PageTitle>Empleados</PageTitle>
+          <Button onClick={() => setIsModalOpen(true)}>Agregar Empleado</Button>
+        </Header>
+        <Table dataSource={data.length > 0 && data} columns={columns} />
+        {employeeSelected == undefined && modeEdition == false ? (
+          <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
+            <div style={{ margin: "20px" }}>
+              
+                <FormEmployess
+                  setIsModalOpen={setIsModalOpen}
+                  form={form}
+                  getData={getData}
+                />
+              
+            </div>
+          </Modal>
+        ) : employeeSelected !== undefined && modeEdition ? (
+          <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
+            <div style={{ margin: "20px" }}>
+              <FormEmployess
+                setIsModalOpen={setIsModalOpen}
+                form={form}
+                getData={getData}
+                employeeSelected={employeeSelected}
+              />
+            </div>
+          </Modal>
+        ) : (
+          <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
+            <div style={{ margin: "20px" }}>
+              <ViewDetails employeeSelected={employeeSelected} />
+            </div>
+          </Modal>
+        )}
+      </>
+    );
+}
 
 const Container = styled.div`
 display: flex;
