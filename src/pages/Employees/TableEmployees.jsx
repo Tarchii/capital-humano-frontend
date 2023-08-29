@@ -5,6 +5,7 @@ import { UploadOutlined, DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-
 import axios from '../../config/axios';
 import FormEmployess from './FormEmployees';
 import ViewDetails from './ViewDetails';
+import { toast } from 'react-toastify';
 
 const TableEmployees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +45,17 @@ const TableEmployees = () => {
         setIsModalOpen(true)
         setModeEdition(true)
     }
+
+    const deleteEmployee = async (employee)=>{
+      try {
+        await axios.delete("/empleados/", { data: { id: employee._id } });
+        getData();
+        toast.info("Empleado dado de baja");
+      } catch (error) {
+        toast.error(error.response?.data.message || error.message);
+      }
+    }
+
     const columns = [
         {
             title: 'Legajo',
@@ -90,8 +102,8 @@ const TableEmployees = () => {
             title: 'Eliminar',
             dataIndex: 'eliminar',
             key: 'eliminar',
-            render: () => <CenteredButton>
-                <Button danger shape='circle'><DeleteOutlined /></Button>
+            render: (text,record) => <CenteredButton>
+                <Button onClick={()=>deleteEmployee(record)} danger shape='circle'><DeleteOutlined /></Button>
             </CenteredButton>
         },
         {
