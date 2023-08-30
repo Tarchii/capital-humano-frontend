@@ -9,7 +9,7 @@ const Header = () => {
 
   const handleLogOut = () => {
     localStorage.removeItem("user");
-    navigate("/");
+    navigate("/capitalh");
   };
 
   const menu = (
