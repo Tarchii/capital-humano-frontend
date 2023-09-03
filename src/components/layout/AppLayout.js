@@ -81,9 +81,9 @@ const AppLayout = ({ children }) => {
               <Menu.Item
                 key="/sindicatos"
                 icon={<SettingOutlined />}
-                onClick={() => navigate("/sindicatos")}
+                onClick={() => navigate("/puestos")}
               >
-                Sindicatos
+                Puestos de Trabajo
               </Menu.Item>
               <Menu.Item
                 key="/obraSocial"

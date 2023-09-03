@@ -11,8 +11,8 @@ import Reports from "./pages/Reports";
 import Members from "./pages/Members";
 import Areas from "./pages/Areas";
 import Employees from "./pages/Employees";
-import Sindicatos from "./pages/Sindicatos";
 import ObraSocialEmpleado from "./pages/Employees/ObraSocialEmpleado";
+import Puestos from "./pages/Puestos";
 
 
 // const PrivateRoute = ({ children, ...rest }) => (
@@ -144,10 +144,10 @@ const ruta = "/capitalh";
         }
       />
       <Route
-        path={"/sindicatos"}
+        path={"/puestos"}
         element={
           <PrivateRoute>
-            <Sindicatos />
+            <Puestos />
           </PrivateRoute>
         }
       />
