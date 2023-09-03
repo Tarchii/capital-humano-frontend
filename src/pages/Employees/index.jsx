@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { endpoints } from "../../services/endpoints";
 import axios from "axios";
+import ObraSocialEmpleado from "./ObraSocialEmpleado";
 
 const Employees = () => {
   const [isTabDisabled, setIsTabDisabled] = useState(true);
@@ -49,6 +50,7 @@ const Employees = () => {
           >
             Content of Tab Pane 2
           </Tabs.TabPane>
+        
         </Tabs>
       </Container>
     </AppLayout>

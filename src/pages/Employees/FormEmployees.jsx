@@ -1,14 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { Option } from "antd/es/mentions";
 import { toast } from "react-toastify";
 import axios from "../../config/axios";
+import useGet from "../../hooks/useGet";
+import { Spin } from 'antd';
 
-const FormEmployess = ({ closeModal, form,getData, employeeSelected}) => {
+const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
 
+  const [obrasSocialesSeleccionadas, setObrasSocialesSeleccionadas] = useState([]);
+
+  const [obrasSociales, loading, getObrasSociales] = useGet(
+    '/obraSocial',
+    axios
+  );
 
   const onFinish = async (values) => {
- if(employeeSelected == undefined){
+ if(employeeSelected === true){
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas}
 
      try {
        const respuesta = await axios.post("/empleados", values);
@@ -20,7 +29,7 @@ const FormEmployess = ({ closeModal, form,getData, employeeSelected}) => {
        toast.error(error.response?.data.message || error.message);
      }
  }else{
-    
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas}
     try {
         const respuesta = await axios.put(`/empleados/${employeeSelected._id}`, values);
         closeModal()
@@ -36,6 +45,13 @@ const FormEmployess = ({ closeModal, form,getData, employeeSelected}) => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  
+  
+  useEffect(() => {
+    if (employeeSelected !== true) {
+      setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales);
+    }else setObrasSocialesSeleccionadas([])
+  }, [employeeSelected]);
 
   return (
     <Form
@@ -170,6 +186,55 @@ const FormEmployess = ({ closeModal, form,getData, employeeSelected}) => {
         </Select>
       </Form.Item>
 
+      <Form.Item
+        label="Obra Social"
+        name="obrasSociales"
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: "ingrese una Obra Social",
+        //   },
+        // ]}
+      >
+   {!loading && employeeSelected? (
+          obrasSociales.obraSociales.map((rep, index) => {
+            const checkboxHandler = (event) => {
+              const obraSocialId = rep._id;
+              const isChecked = event.target.checked;
+
+              // Verifica si el checkbox está marcado o desmarcado
+              if (isChecked) {
+                // Agrega la obra social al array de seleccionadas
+                setObrasSocialesSeleccionadas((prevSeleccionadas) => [
+                  ...prevSeleccionadas,
+                  obraSocialId,
+                ]);
+              } else {
+                // Remueve la obra social del array de seleccionadas
+                setObrasSocialesSeleccionadas((prevSeleccionadas) =>
+                  prevSeleccionadas.filter((id) => id !== obraSocialId)
+                );
+              }
+            };
+
+            return (
+              <div key={index}>
+                <Input
+                  type="checkbox"
+                  value={rep._id}
+                  onChange={checkboxHandler}
+                  checked={obrasSocialesSeleccionadas?.includes(rep._id)}
+                />
+                <label title="Seleccione al menos una">{rep.nombre}</label>
+              </div>
+            );
+          })
+        ) : (
+          <Spin spinning={loading} />
+        )}
+      
+      </Form.Item>
+      
       <Form.Item
         wrapperCol={{
           offset: 8,

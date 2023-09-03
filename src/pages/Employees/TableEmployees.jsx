@@ -6,6 +6,7 @@ import axios from '../../config/axios';
 import FormEmployess from './FormEmployees';
 import ViewDetails from './ViewDetails';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const TableEmployees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,8 +41,8 @@ const TableEmployees = () => {
     }
 
     const editEmployee = (employee)=>{
-        form.setFieldsValue(employee);
         setEmployeeSelected(employee)
+        form.setFieldsValue(employee);
         setIsModalOpen(true)
         setModeEdition(true)
     }
@@ -131,6 +132,7 @@ const TableEmployees = () => {
                  closeModal={closeModal}
                   form={form}
                   getData={getData}
+                  employeeSelected={true}
                 />
               
             </div>

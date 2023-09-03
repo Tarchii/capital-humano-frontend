@@ -12,6 +12,7 @@ import Members from "./pages/Members";
 import Areas from "./pages/Areas";
 import Employees from "./pages/Employees";
 import Sindicatos from "./pages/Sindicatos";
+import ObraSocialEmpleado from "./pages/Employees/ObraSocialEmpleado";
 
 
 // const PrivateRoute = ({ children, ...rest }) => (
@@ -91,6 +92,14 @@ const ruta = "/capitalh";
         element={
           <PrivateRoute>
             <Lobby />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path={"/vincularObraSocial"}
+        element={
+          <PrivateRoute>
+            <ObraSocialEmpleado />
           </PrivateRoute>
         }
       />
