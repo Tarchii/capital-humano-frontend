@@ -9,15 +9,21 @@ import { Spin } from 'antd';
 const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
 
   const [obrasSocialesSeleccionadas, setObrasSocialesSeleccionadas] = useState([]);
+  const [puestosSeleccionados, setPuestosSeleccionados] = useState([]);
 
   const [obrasSociales, loading, getObrasSociales] = useGet(
     '/obraSocial',
     axios
   );
 
+  const [puestos, loadingPuestos, getPuestos] = useGet(
+    '/puestos',
+    axios
+  );
+
   const onFinish = async (values) => {
  if(employeeSelected === true){
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados}
 
      try {
        const respuesta = await axios.post("/empleados", values);
@@ -29,7 +35,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
        toast.error(error.response?.data.message || error.message);
      }
  }else{
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados}
     try {
         const respuesta = await axios.put(`/empleados/${employeeSelected._id}`, values);
         closeModal()
@@ -50,7 +56,11 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
   useEffect(() => {
     if (employeeSelected !== true) {
       setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales);
-    }else setObrasSocialesSeleccionadas([])
+      setPuestosSeleccionados(employeeSelected?.puestos)
+    }else {
+      setObrasSocialesSeleccionadas([])
+      setPuestosSeleccionados([])
+    }
   }, [employeeSelected]);
 
   return (
@@ -235,6 +245,49 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
       
       </Form.Item>
       
+      <Form.Item
+        label="Puestos"
+        name="puestos"
+      >
+
+        {
+          !loadingPuestos && employeeSelected?
+          puestos.puestos.map((pues,index)=>{
+            const checkboxHandler = (event) => {
+              const puestoId = pues._id;
+              const isChecked = event.target.checked;
+
+              // Verifica si el checkbox está marcado o desmarcado
+              if (isChecked) {
+                // Agrega la obra social al array de seleccionadas
+                setPuestosSeleccionados((prevSeleccionadas) => [
+                  ...prevSeleccionadas,
+                  puestoId,
+                ]);
+              } else {
+                // Remueve la obra social del array de seleccionadas
+                setPuestosSeleccionados((prevSeleccionadas) =>
+                  prevSeleccionadas.filter((id) => id !== puestoId)
+                );
+              }
+            };
+            return (
+              <div key={index}>
+                <Input
+                  type="checkbox"
+                  value={pues._id}
+                  onChange={checkboxHandler}
+                  checked={puestosSeleccionados?.includes(pues._id)}
+                />
+                <label title="Seleccione al menos una">{pues.nombre}</label>
+              </div>
+            );
+          }): (
+            <Spin spinning={loading} />
+          )
+        }
+      </Form.Item>
+
       <Form.Item
         wrapperCol={{
           offset: 8,
