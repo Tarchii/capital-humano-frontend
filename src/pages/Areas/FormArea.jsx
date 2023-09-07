@@ -4,28 +4,28 @@ import { Option } from "antd/es/mentions";
 import { toast } from "react-toastify";
 import axios from "../../config/axios";
 
-const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => {
+const FormArea = ({ closeModal, form,getData, employeeSelected}) => {
  
     const onFinish = async (values) => {
         if(employeeSelected == undefined){
        
             try {
-              const respuesta = await axios.post("/puestos", values);
+              const respuesta = await axios.post("/areas", values);
               closeModal();
               getData();
               form.resetFields(); // Limpiar campos
-              toast.success("Puesto registrado con éxito!");
+              toast.success("Área registrada con éxito!");
             } catch (error) {
               toast.error(error.response?.data.message || error.message);
             }
         }else{
            
            try {
-               const respuesta = await axios.put(`/puestos/${employeeSelected._id}`, values);
+               const respuesta = await axios.put(`/areas/${employeeSelected._id}`, values);
                closeModal()
                getData();
                form.resetFields(); // Limpiar campos
-               toast.success("Puesto modificado con éxito!");
+               toast.success("Área modificada con éxito!");
              } catch (error) {
                toast.error(error.response?.data.message || error.message);
              }
@@ -82,43 +82,6 @@ const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => 
              >
                <Input />
              </Form.Item>
-
-             <Form.Item
-               label="Area"
-               name="area"
-               rules={[
-                 {
-                   required: true,
-                   message: "Please input your name!",
-                 },
-               ]}
-             ></Form.Item>
-       
-             <Form.Item
-               label="Sueldo Base"
-               name="sueldoBase"
-               rules={[
-                 {
-                   required: true,
-                   message: "Please input your age!",
-                 },
-               ]}
-             >
-               <Input type="number"/>
-             </Form.Item>
-       
-             <Form.Item
-               label="Fecha de Inicio"
-               name="inicio"
-               rules={[
-                 {
-                   required: true,
-                   message: "Please input your DNI!",
-                 },
-               ]}
-             >
-               <Input type="date"/>
-             </Form.Item>
        
              
              <Form.Item
@@ -134,4 +97,4 @@ const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => 
            </Form>)
 }
 
-export default FormPuestosDeTrabajo
+export default FormArea

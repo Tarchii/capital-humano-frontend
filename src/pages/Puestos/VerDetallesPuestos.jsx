@@ -5,6 +5,7 @@ const VerDetallesPuestos = ({employeeSelected}) => {
     <div>
     <p><strong>Nombre: </strong> {employeeSelected.nombre}</p>
     <p><strong>Descripcion: </strong> {employeeSelected.descripcion}</p>
+    <p><strong>Área: </strong> {employeeSelected.area}</p>
     <p><strong>Sueldo: </strong> {employeeSelected.sueldoBase}</p>
     <p><strong>Inicio: </strong> {employeeSelected.inicio}</p>
 

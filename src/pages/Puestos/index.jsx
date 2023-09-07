@@ -72,6 +72,11 @@ const Puestos = () => {
             key: 'apellido',
         },
         {
+          title: 'area',
+          dataIndex: 'area',
+          key: 'area',
+      },
+        {
             title: 'sueldoBase',
             dataIndex: 'sueldoBase',
             key: 'nombre',

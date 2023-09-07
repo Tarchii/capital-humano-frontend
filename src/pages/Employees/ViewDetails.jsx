@@ -1,6 +1,7 @@
 import React from 'react'
 import ObraSocialEmpleado from './ObraSocialEmpleado'
 import PuestosEmpleados from './PuestosEmpleados'
+import AreaEmpleado from './AreaEmpleado'
 
 const ViewDetails = ({employeeSelected}) => {
   return (
@@ -13,6 +14,8 @@ const ViewDetails = ({employeeSelected}) => {
         <p><strong>Genero: </strong> {employeeSelected.genero}</p>
         <p><strong>Obras Sociales: </strong> </p>
         <ObraSocialEmpleado employeeSelected={employeeSelected}/>
+        <p><strong>Áreas: </strong> </p>
+        <AreaEmpleado employeeSelected={employeeSelected}/>
         <p><strong>Puestos: </strong> </p>
         <PuestosEmpleados employeeSelected={employeeSelected}/>
     </div>

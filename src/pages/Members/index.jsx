@@ -6,7 +6,7 @@ import franco_tarchini from "../../assets/franco_tarchini.jpg";
 import guillermo_alonso from "../../assets/guillermo_alonso.jpeg";
 import faride_chair from "../../assets/faride_chair.jpeg";
 import ivan_yuste from "../../assets/ivan_yuste.jpeg";
-import josefina_japaze from "../../assets/josefina_japaze.jpeg";
+import josefina_japaze from "../../assets/josefina_japaze.jpg";
 import juan_bustos_thames from "../../assets/juan_bustos_thames.jpeg";
 import luciana_olmos from "../../assets/luciana_olmos.jpeg";
 

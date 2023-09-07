@@ -10,6 +10,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
 
   const [obrasSocialesSeleccionadas, setObrasSocialesSeleccionadas] = useState([]);
   const [puestosSeleccionados, setPuestosSeleccionados] = useState([]);
+  const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
 
   const [obrasSociales, loading, getObrasSociales] = useGet(
     '/obraSocial',
@@ -21,9 +22,14 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
     axios
   );
 
+  const [areas, loadingAreas, getAreas] = useGet(
+    '/areas',
+    axios
+  );
+
   const onFinish = async (values) => {
  if(employeeSelected === true){
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas}
 
      try {
        const respuesta = await axios.post("/empleados", values);
@@ -35,7 +41,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
        toast.error(error.response?.data.message || error.message);
      }
  }else{
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas}
     try {
         const respuesta = await axios.put(`/empleados/${employeeSelected._id}`, values);
         closeModal()
@@ -57,9 +63,11 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
     if (employeeSelected !== true) {
       setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales);
       setPuestosSeleccionados(employeeSelected?.puestos)
+      setAreasSeleccionadas(employeeSelected?.areas)
     }else {
       setObrasSocialesSeleccionadas([])
       setPuestosSeleccionados([])
+      setAreasSeleccionadas([])
     }
   }, [employeeSelected]);
 
@@ -280,6 +288,49 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
                   checked={puestosSeleccionados?.includes(pues._id)}
                 />
                 <label title="Seleccione al menos una">{pues.nombre}</label>
+              </div>
+            );
+          }): (
+            <Spin spinning={loading} />
+          )
+        }
+      </Form.Item>
+
+      <Form.Item
+        label="Areas"
+        name="areas"
+      >
+
+        {
+          !loadingAreas && employeeSelected?
+          areas.areas.map((ar,index)=>{
+            const checkboxHandler = (event) => {
+              const areaId = ar._id;
+              const isChecked = event.target.checked;
+
+              // Verifica si el checkbox está marcado o desmarcado
+              if (isChecked) {
+                // Agrega el área al array de seleccionadas
+                setAreasSeleccionadas((prevSeleccionadas) => [
+                  ...prevSeleccionadas,
+                  areaId,
+                ]);
+              } else {
+                // Remueve el área del array de seleccionadas
+                setAreasSeleccionadas((prevSeleccionadas) =>
+                  prevSeleccionadas.filter((id) => id !== areaId)
+                );
+              }
+            };
+            return (
+              <div key={index}>
+                <Input
+                  type="checkbox"
+                  value={ar._id}
+                  onChange={checkboxHandler}
+                  checked={areasSeleccionadas?.includes(ar._id)}
+                />
+                <label title="Seleccione al menos una">{ar.nombre}</label>
               </div>
             );
           }): (
