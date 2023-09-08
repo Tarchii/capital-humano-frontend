@@ -48,7 +48,6 @@ const TableEmployees = () => {
       const dniMatch = record.dni.toString().startsWith(filterValues.dni);
       const apellidoMatch = record.apellido.startsWith(filterValues.apellido);
 
-      // Devolver true solo si todas las condiciones se cumplen
       return legajoMatch && dniMatch && apellidoMatch;
     });
   };

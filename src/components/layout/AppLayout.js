@@ -79,14 +79,14 @@ const AppLayout = ({ children }) => {
                 Áreas
               </Menu.Item>
               <Menu.Item
-                key="/sindicatos"
+                key="/puestos"
                 icon={<SettingOutlined />}
                 onClick={() => navigate("/puestos")}
               >
                 Puestos de Trabajo
               </Menu.Item>
               <Menu.Item
-                key="/obraSocial"
+                key="/obra-social"
                 icon={<SettingOutlined />}
                 onClick={() => navigate("/obra-social")}
               >
