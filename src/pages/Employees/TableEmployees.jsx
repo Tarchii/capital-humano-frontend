@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Button, Form, Modal, Table, Input } from 'antd';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Button, Form, Modal, Table, Input } from "antd";
 import {
   UploadOutlined,
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-import axios from '../../config/axios';
-import FormEmployess from './FormEmployees';
-import ViewDetails from './ViewDetails';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+} from "@ant-design/icons";
+import axios from "../../config/axios";
+import FormEmployess from "./FormEmployees";
+import ViewDetails from "./ViewDetails";
+import { toast } from "react-toastify";
+
+const defaultFilterValue = {
+  dni: "",
+  legajo: "",
+  apellido: "",
+};
 
 const TableEmployees = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,8 +24,7 @@ const TableEmployees = () => {
   const [form] = Form.useForm(); // Instancia del formulario
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
-  const [searchDNI, setSearchDNI] = useState(''); // Nuevo estado para el DNI de búsqueda
-  const [searchResult, setSearchResult] = useState([]); // Nuevo estado para almacenar los resultados de la búsqueda
+  const [filterValues, setFilterValue] = useState(defaultFilterValue);
 
   const getData = async () => {
     try {
@@ -34,6 +37,21 @@ const TableEmployees = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const filterTableData = (data, filterValues) => {
+    if (!filterValues) return data;
+
+    return data.filter((record) => {
+      const legajoMatch = record.legajo
+        .toString()
+        .startsWith(filterValues.legajo);
+      const dniMatch = record.dni.toString().startsWith(filterValues.dni);
+      const apellidoMatch = record.apellido.startsWith(filterValues.apellido);
+
+      // Devolver true solo si todas las condiciones se cumplen
+      return legajoMatch && dniMatch && apellidoMatch;
+    });
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -64,15 +82,6 @@ const TableEmployees = () => {
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`/empleados/${searchDNI}`);
-      setSearchResult([response.data.empleado]);
-    } catch (error) {
-      toast.error(error.response?.data.message || error.message);
-    }
-  };
-  
   const columns = [
     {
       title: "Legajo",
@@ -161,16 +170,37 @@ const TableEmployees = () => {
       </Header>
       <SearchContainer>
         <Input
-          placeholder="Buscar por DNI"
-          prefix={<SearchOutlined />}
-          value={searchDNI}
-          onChange={(e) => setSearchDNI(e.target.value)}
+          placeholder="Buscar por Legajo"
+          value={filterValues.legajo}
+          onChange={(e) =>
+            setFilterValue({ ...filterValues, legajo: e.target.value })
+          }
+          allowClear
+          type="number"
         />
-        <Button type="primary" onClick={handleSearch}>
-          Buscar
-        </Button>
+        <Input
+          placeholder="Buscar por Apellido"
+          value={filterValues.apellido}
+          onChange={(e) =>
+            setFilterValue({ ...filterValues, apellido: e.target.value })
+          }
+          allowClear
+        />
+        <Input
+          placeholder="Buscar por DNI"
+          value={filterValues.dni}
+          onChange={(e) =>
+            setFilterValue({ ...filterValues, dni: e.target.value })
+          }
+          allowClear
+          type="number"
+        />
       </SearchContainer>
-      <Table dataSource={searchResult.length > 0 ? searchResult : data} columns={columns} />
+      <Table
+        dataSource={filterTableData(data, filterValues)}
+        columns={columns}
+        rowKey={(record) => record._id}
+      />
       {employeeSelected == undefined && modeEdition == false ? (
         <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
           <div style={{ margin: "20px" }}>
@@ -203,12 +233,6 @@ const TableEmployees = () => {
     </>
   );
 };
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
 
 const PageTitle = styled.h1`
   font-size: 25px;
