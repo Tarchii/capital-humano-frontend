@@ -152,7 +152,7 @@ const Puestos = () => {
           </Header>
           <SearchContainer>
             <Input
-              placeholder="Buscar por Nombre de Puesto de Trabajo"
+              placeholder="Buscar por Nombre"
               value={filterValues.name}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, name: e.target.value })
@@ -160,7 +160,7 @@ const Puestos = () => {
               allowClear
             />
             <Input
-              placeholder="Buscar por Área de Puesto de Trabajo"
+              placeholder="Buscar por Área"
               value={filterValues.area}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, area: e.target.value })

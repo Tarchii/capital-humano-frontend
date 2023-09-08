@@ -1,17 +1,17 @@
-import { Button, Form, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Modal, Table } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  UploadOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import AppLayout from "../../components/layout/AppLayout";
 import FormObraSocial from "./FormObraSocial";
 import ViewDetailsObraSocial from "./ViewDetailsObraSocial";
+
+const defaultFilterValue = {
+  name: "",
+  cuit: "",
+};
 
 const ObraSocial = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +19,7 @@ const ObraSocial = () => {
   const [form] = Form.useForm(); // Instancia del formulario
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
+  const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const getData = async () => {
     try {
@@ -30,6 +31,17 @@ const ObraSocial = () => {
   };
   useEffect(() => {
     getData();
+  }, []);
+
+  const filterTableData = useCallback((data, filterValues) => {
+    if (!filterValues) return data;
+
+    return data.filter((record) => {
+      const nameMatch = record.nombre.startsWith(filterValues.name);
+      const cuitMatch = record.cuit.toString().startsWith(filterValues.cuit);
+
+      return nameMatch && cuitMatch;
+    });
   }, []);
 
   const closeModal = () => {
@@ -134,7 +146,29 @@ const ObraSocial = () => {
               Agregar Obra Social
             </Button>
           </Header>
-          <Table dataSource={data.length > 0 && data} columns={columns} />
+          <SearchContainer>
+            <Input
+              placeholder="Buscar por Nombre"
+              value={filterValues.name}
+              onChange={(e) =>
+                setFilterValues({ ...filterValues, name: e.target.value })
+              }
+              allowClear
+            />
+            <Input
+              placeholder="Buscar por CUIT"
+              value={filterValues.cuit}
+              onChange={(e) =>
+                setFilterValues({ ...filterValues, cuit: e.target.value })
+              }
+              type="number"
+              allowClear
+            />
+          </SearchContainer>
+          <Table
+            dataSource={filterTableData(data, filterValues)}
+            columns={columns}
+          />
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
@@ -192,6 +226,16 @@ const CenteredButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+
+  & > * {
+    margin-right: 16px;
+  }
 `;
 
 export default ObraSocial;
