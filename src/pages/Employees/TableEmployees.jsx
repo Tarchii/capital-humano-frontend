@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, Form, Modal, Table, Input } from "antd";
 import {
@@ -38,7 +38,7 @@ const TableEmployees = () => {
     getData();
   }, []);
 
-  const filterTableData = (data, filterValues) => {
+  const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
 
     return data.filter((record) => {
@@ -50,7 +50,7 @@ const TableEmployees = () => {
 
       return legajoMatch && dniMatch && apellidoMatch;
     });
-  };
+  }, []);
 
   const closeModal = () => {
     setIsModalOpen(false);

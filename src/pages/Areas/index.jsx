@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
 import { Button, Form, Input, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
@@ -29,7 +29,11 @@ const Areas = () => {
     }
   };
 
-  const filterTableData = (data, filterValues) => {
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
 
     return data.filter((record) => {
@@ -37,10 +41,6 @@ const Areas = () => {
 
       return nameMatch;
     });
-  };
-
-  useEffect(() => {
-    getData();
   }, []);
 
   const closeModal = () => {
@@ -146,6 +146,7 @@ const Areas = () => {
           <Table
             dataSource={filterTableData(data, filterValues)}
             columns={columns}
+            rowKey={(record) => record._id}
           />
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>

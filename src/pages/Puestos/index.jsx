@@ -1,17 +1,17 @@
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
-import { Button, Form, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
-import {
-  UploadOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { Button, Form, Input, Modal, Table } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import FormPuestosDeTrabajo from "./FormPuestosDeTrabajo";
 import VerDetallesPuestos from "./VerDetallesPuestos";
+
+const defaultFilterValue = {
+  name: "",
+  area: "",
+};
 
 const Puestos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +19,7 @@ const Puestos = () => {
   const [form] = Form.useForm(); // Instancia del formulario
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
+  const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const getData = async () => {
     try {
@@ -28,8 +29,20 @@ const Puestos = () => {
       console.log(error.message);
     }
   };
+
   useEffect(() => {
     getData();
+  }, []);
+
+  const filterTableData = useCallback((data, filterValues) => {
+    if (!filterValues) return data;
+
+    return data.filter((record) => {
+      const nameMatch = record.nombre.startsWith(filterValues.name);
+      const areaMatch = record.area.startsWith(filterValues.area);
+
+      return nameMatch && areaMatch;
+    });
   }, []);
 
   const closeModal = () => {
@@ -137,7 +150,29 @@ const Puestos = () => {
             <PageTitle>Puestos de trabajo</PageTitle>
             <Button onClick={() => setIsModalOpen(true)}>Agregar Puesto</Button>
           </Header>
-          <Table dataSource={data.length > 0 && data} columns={columns} />
+          <SearchContainer>
+            <Input
+              placeholder="Buscar por Nombre de Puesto de Trabajo"
+              value={filterValues.name}
+              onChange={(e) =>
+                setFilterValues({ ...filterValues, name: e.target.value })
+              }
+              allowClear
+            />
+            <Input
+              placeholder="Buscar por Área de Puesto de Trabajo"
+              value={filterValues.area}
+              onChange={(e) =>
+                setFilterValues({ ...filterValues, area: e.target.value })
+              }
+              allowClear
+            />
+          </SearchContainer>
+          <Table
+            dataSource={filterTableData(data, filterValues)}
+            columns={columns}
+            rowKey={(record) => record._id}
+          />
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
@@ -195,6 +230,16 @@ const CenteredButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+
+  & > * {
+    margin-right: 16px;
+  }
 `;
 
 export default Puestos;
