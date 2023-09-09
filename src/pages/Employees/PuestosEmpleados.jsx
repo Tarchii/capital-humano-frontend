@@ -10,27 +10,6 @@ const PuestosEmpleados = ({employeeSelected}) => {
       );
 
   return (
-  //   <div className="checkboxColumn">
-
-  //   {!loading ? (
-  //    puestos.puestos.map((rep, index) => {
-  //       return (
-  //         <div key={index} className="d-flex">
-  //           <input
-  //             type="checkbox"
-  //             value={rep._id}
-  //             checked={employeeSelected.puestos?.includes(rep._id)}
-  //           />
-  //           <label title="Seleccione al menos una" className="ms-2">
-  //             {rep.nombre}
-  //           </label>
-  //         </div>
-  //       );
-  //     })
-  //   ) : (
-  //     <Spin spinning={loading}/>
-  //   )}
-  // </div>
   <div className="employeePuestosList">
     {!loading ? (
       <ul>

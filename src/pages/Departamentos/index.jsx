@@ -5,18 +5,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
-import FormArea from "./FormArea";
-import ViewDetailsArea from "./ViewDetailsArea";
+import FormDepartamento from "./FormDepartamento";
+import ViewDetailsDepartamento from "./ViewDetailsDepartamento";
 
 const defaultFilterValue = {
   name: "",
-  departamento: "",
 };
 
-const Areas = () => {
+const Departamentos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState([]);
-  const [departamentos, setDepartamentos] = useState([]);
   const [form] = Form.useForm(); // Instancia del formulario
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
@@ -24,24 +22,8 @@ const Areas = () => {
 
   const getData = async () => {
     try {
-      const info = await axios.get("/areas");
-      const departamentosInfo = await axios.get("/departamentos");
-      const areas = info.data.areas.map((area) => {
-        const departamento = departamentosInfo.data.departamentos.find(
-          (departamento) => departamento._id === area.departamento
-        );
-        return {
-          ...area,
-          departamento: {
-            id: departamento._id,
-            nombre: departamento.nombre,
-            value: departamento.nombre,
-          },
-        };
-      });
-      setData(areas)
-      setDepartamentos(departamentosInfo.data.departamentos)
-      //setData(info.data.areas);
+      const info = await axios.get("/departamentos");
+      setData(info.data.departamentos);
     } catch (error) {
       console.log(error.message);
     }
@@ -56,10 +38,8 @@ const Areas = () => {
 
     return data.filter((record) => {
       const nameMatch = record.nombre.startsWith(filterValues.name);
-      const departamentoMatch = record.departamento.nombre.startsWith(filterValues.departamento);
 
-      return nameMatch && departamentoMatch;
-      //return nameMatch;
+      return nameMatch;
     });
   }, []);
 
@@ -84,9 +64,9 @@ const Areas = () => {
 
   const deleteEmployee = async (employee) => {
     try {
-      await axios.delete("/areas/", { data: { id: employee._id } });
+      await axios.delete("/departamentos/", { data: { id: employee._id } });
       getData();
-      toast.info("Área dada de baja");
+      toast.info("Departamento dado de baja");
     } catch (error) {
       toast.error(error.response?.data.message || error.message);
     }
@@ -102,11 +82,6 @@ const Areas = () => {
       title: "descripcion",
       dataIndex: "descripcion",
       key: "apellido",
-    },
-    {
-      title: "departamento",
-      dataIndex: ["departamento", "nombre"],
-      key: "departamento",
     },
     {
       title: "Ver Detalles",
@@ -155,12 +130,12 @@ const Areas = () => {
       <Container>
         <PageTitle>
           <Header>
-            <PageTitle>Áreas de trabajo</PageTitle>
-            <Button onClick={() => setIsModalOpen(true)}>Agregar área</Button>
+            <PageTitle>Departamentos de trabajo</PageTitle>
+            <Button onClick={() => setIsModalOpen(true)}>Agregar departamento</Button>
           </Header>
           <SearchContainer>
             <Input
-              placeholder="Buscar por Nombre de Área"
+              placeholder="Buscar por Nombre de Departamento"
               value={filterValues.name}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, name: e.target.value })
@@ -176,30 +151,28 @@ const Areas = () => {
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <FormArea
+                <FormDepartamento
                   closeModal={closeModal}
                   form={form}
                   getData={getData}
-                  departamentos={departamentos}
                 />
               </div>
             </Modal>
           ) : employeeSelected !== undefined && modeEdition ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <FormArea
+                <FormDepartamento
                   closeModal={closeModal}
                   form={form}
                   getData={getData}
                   employeeSelected={employeeSelected}
-                  departamentos={departamentos}
                 />
               </div>
             </Modal>
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <ViewDetailsArea employeeSelected={employeeSelected} />
+                <ViewDetailsDepartamento employeeSelected={employeeSelected} />
               </div>
             </Modal>
           )}
@@ -244,4 +217,4 @@ const SearchContainer = styled.div`
   }
 `;
 
-export default Areas;
+export default Departamentos;

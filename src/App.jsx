@@ -13,6 +13,7 @@ import Areas from "./pages/Areas";
 import Employees from "./pages/Employees";
 import ObraSocialEmpleado from "./pages/Employees/ObraSocialEmpleado";
 import Puestos from "./pages/Puestos";
+import Departamentos from "./pages/Departamentos";
 
 
 // const PrivateRoute = ({ children, ...rest }) => (
@@ -108,6 +109,14 @@ const ruta = "/capitalh";
         element={
           <PrivateRoute>
             <Members />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path={"/departamentos"}
+        element={
+          <PrivateRoute>
+            <Departamentos />
           </PrivateRoute>
         }
       />

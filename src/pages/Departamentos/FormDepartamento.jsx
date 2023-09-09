@@ -4,29 +4,28 @@ import { Option } from "antd/es/mentions";
 import { toast } from "react-toastify";
 import axios from "../../config/axios";
 
-const FormArea = ({ closeModal, form,getData, employeeSelected, departamentos}) => {
+const FormDepartamento = ({ closeModal, form,getData, employeeSelected}) => {
  
     const onFinish = async (values) => {
-      values = {...values, departamento: departamentos.find(departamento => departamento.nombre == values.departamento)._id}
         if(employeeSelected == undefined){
        
             try {
-              const respuesta = await axios.post("/areas", values);
+              const respuesta = await axios.post("/departamentos", values);
               closeModal();
               getData();
               form.resetFields(); // Limpiar campos
-              toast.success("Área registrada con éxito!");
+              toast.success("Departamento registrado con éxito!");
             } catch (error) {
               toast.error(error.response?.data.message || error.message);
             }
         }else{
            
            try {
-               const respuesta = await axios.put(`/areas/${employeeSelected._id}`, values);
+               const respuesta = await axios.put(`/departamentos/${employeeSelected._id}`, values);
                closeModal()
                getData();
                form.resetFields(); // Limpiar campos
-               toast.success("Área modificada con éxito!");
+               toast.success("Departamento modificado con éxito!");
              } catch (error) {
                toast.error(error.response?.data.message || error.message);
              }
@@ -84,26 +83,7 @@ const FormArea = ({ closeModal, form,getData, employeeSelected, departamentos}) 
                <Input />
              </Form.Item>
        
-             <Form.Item
-               label="Departamento"
-               name="departamento"
-               rules={[
-                 {
-                   required: true,
-                   message: "Please input your name!",
-                 },
-               ]}
-             >
-              <Select 
-              placeholder="Seleccione un departamento"
-              >
-                  {departamentos.map((departamento) => (
-                    <Option key={departamento.id} value={departamento.nombre}>
-                      </Option>
-                  ))}
-              </Select>
-             </Form.Item>
-
+             
              <Form.Item
                wrapperCol={{
                  offset: 8,
@@ -117,4 +97,4 @@ const FormArea = ({ closeModal, form,getData, employeeSelected, departamentos}) 
            </Form>)
 }
 
-export default FormArea
+export default FormDepartamento

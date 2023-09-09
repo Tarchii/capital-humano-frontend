@@ -79,6 +79,13 @@ const AppLayout = ({ children }) => {
                 Áreas
               </Menu.Item>
               <Menu.Item
+                key="/departamentos"
+                icon={<SettingOutlined />}
+                onClick={() => navigate("/departamentos")}
+              >
+                Departamentos
+              </Menu.Item>
+              <Menu.Item
                 key="/puestos"
                 icon={<SettingOutlined />}
                 onClick={() => navigate("/puestos")}

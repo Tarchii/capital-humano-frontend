@@ -11,6 +11,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
   const [obrasSocialesSeleccionadas, setObrasSocialesSeleccionadas] = useState([]);
   const [puestosSeleccionados, setPuestosSeleccionados] = useState([]);
   const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
+  const [departamentosSeleccionados, setDepartamentosSeleccionados] = useState([]);
 
   const [obrasSociales, loading, getObrasSociales] = useGet(
     '/obraSocial',
@@ -27,9 +28,14 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
     axios
   );
 
+  const [departamentos, loadingDepartamentos, getDepartamentos] = useGet(
+    '/departamentos',
+    axios
+  );
+
   const onFinish = async (values) => {
  if(employeeSelected === true){
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas, departamentos: departamentosSeleccionados}
 
      try {
        const respuesta = await axios.post("/empleados", values);
@@ -41,7 +47,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
        toast.error(error.response?.data.message || error.message);
      }
  }else{
-  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas}
+  values = {...values, obrasSociales: obrasSocialesSeleccionadas, puestos: puestosSeleccionados, areas: areasSeleccionadas, departamentos: departamentosSeleccionados}
     try {
         const respuesta = await axios.put(`/empleados/${employeeSelected._id}`, values);
         closeModal()
@@ -64,10 +70,12 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
       setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales);
       setPuestosSeleccionados(employeeSelected?.puestos)
       setAreasSeleccionadas(employeeSelected?.areas)
+      setDepartamentosSeleccionados(employeeSelected?.departamentos)
     }else {
       setObrasSocialesSeleccionadas([])
       setPuestosSeleccionados([])
       setAreasSeleccionadas([])
+      setDepartamentosSeleccionados([])
     }
   }, [employeeSelected]);
 
