@@ -12,29 +12,28 @@ const ObraSocialEmpleado = ({employeeSelected}) => {
       );
 
 
-  return (
-    <div className="checkboxColumn">
-
-      {!loading ? (
-       obrasSociales.obraSociales.map((rep, index) => {
-          return (
-            <div key={index} className="d-flex">
-              <input
-                type="checkbox"
-                value={rep._id}
-                checked={employeeSelected.obrasSociales?.includes(rep._id)}
-              />
-              <label title="Seleccione al menos una" className="ms-2">
-                {rep.nombre}
-              </label>
-            </div>
-          );
-        })
-      ) : (
-        <Spin spinning={loading}/>
-      )}
-    </div>
-  );
+      return (
+        <div className="employeeObrasSocialesList">
+          {!loading ? (
+            <ul>
+              {employeeSelected.obrasSociales?.map((obraSocialId, index) => {
+                const obraSocial = obrasSociales.obraSociales.find(
+                  (obra) => obra._id === obraSocialId
+                );
+      
+                return (
+                  <li key={index}>
+                    {obraSocial ? obraSocial.nombre : ''}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <Spin spinning={loading} />
+          )}
+        </div>
+      );
+      
 }
 
 export default ObraSocialEmpleado

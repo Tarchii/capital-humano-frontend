@@ -16,15 +16,31 @@ const defaultFilterValue = {
 const Puestos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState([]);
+  const [areas, setAreas] = useState([]);
   const [form] = Form.useForm(); // Instancia del formulario
-  const [employeeSelected, setEmployeeSelected] = useState(undefined);
+  const [puestoSelected, setPuestoSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
 
   const getData = async () => {
     try {
       const info = await axios.get("/puestos");
-      setData(info.data.puestos);
+      const areasInfo = await axios.get("/areas");
+      const puestos = info.data.puestos.map((puesto) => {
+        const area = areasInfo.data.areas.find(
+          (area) => area._id === puesto.area
+        );
+        return {
+          ...puesto,
+          area: {
+            id: area._id,
+            nombre: area.nombre,
+            value: area.nombre,
+          },
+        };
+      });
+      setData(puestos);
+      setAreas(areasInfo.data.areas);
     } catch (error) {
       console.log(error.message);
     }
@@ -39,7 +55,7 @@ const Puestos = () => {
 
     return data.filter((record) => {
       const nameMatch = record.nombre.startsWith(filterValues.name);
-      const areaMatch = record.area.startsWith(filterValues.area);
+      const areaMatch = record.area.nombre.startsWith(filterValues.area);
 
       return nameMatch && areaMatch;
     });
@@ -48,25 +64,25 @@ const Puestos = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     form.resetFields();
-    setEmployeeSelected(undefined);
+    setPuestoSelected(undefined);
     setModeEdition(false);
   };
 
-  const ViewDetailsEmployee = (employee) => {
-    setEmployeeSelected(employee);
+  const ViewDetailsPuesto = (puesto) => {
+    setPuestoSelected(puesto);
     setIsModalOpen(true);
   };
 
-  const editEmployee = (employee) => {
-    form.setFieldsValue(employee);
-    setEmployeeSelected(employee);
+  const editPuesto = (puesto) => {
+    form.setFieldsValue(puesto);
+    setPuestoSelected(puesto);
     setIsModalOpen(true);
     setModeEdition(true);
   };
 
-  const deleteEmployee = async (employee) => {
+  const deletePuesto = async (puesto) => {
     try {
-      await axios.delete("/puestos/", { data: { id: employee._id } });
+      await axios.delete("/puestos/", { data: { id: puesto._id } });
       getData();
       toast.info("Puesto dado de baja");
     } catch (error) {
@@ -87,7 +103,7 @@ const Puestos = () => {
     },
     {
       title: "area",
-      dataIndex: "area",
+      dataIndex: ["area", "nombre"],
       key: "area",
     },
     {
@@ -109,7 +125,7 @@ const Puestos = () => {
           <Button
             type="primary"
             shape="circle"
-            onClick={() => ViewDetailsEmployee(record)}
+            onClick={() => ViewDetailsPuesto(record)}
           >
             <EyeOutlined />
           </Button>
@@ -122,7 +138,7 @@ const Puestos = () => {
       key: "editar",
       render: (text, record) => (
         <CenteredButton>
-          <Button shape="circle" onClick={() => editEmployee(record)}>
+          <Button shape="circle" onClick={() => editPuesto(record)}>
             <EditOutlined />
           </Button>
         </CenteredButton>
@@ -134,7 +150,7 @@ const Puestos = () => {
       key: "eliminar",
       render: (text, record) => (
         <CenteredButton>
-          <Button onClick={() => deleteEmployee(record)} danger shape="circle">
+          <Button onClick={() => deletePuesto(record)} danger shape="circle">
             <DeleteOutlined />
           </Button>
         </CenteredButton>
@@ -173,31 +189,33 @@ const Puestos = () => {
             columns={columns}
             rowKey={(record) => record._id}
           />
-          {employeeSelected == undefined && modeEdition == false ? (
+          {puestoSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
                 <FormPuestosDeTrabajo
                   closeModal={closeModal}
                   form={form}
                   getData={getData}
+                  areas={areas}
                 />
               </div>
             </Modal>
-          ) : employeeSelected !== undefined && modeEdition ? (
+          ) : puestoSelected !== undefined && modeEdition ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
                 <FormPuestosDeTrabajo
                   closeModal={closeModal}
                   form={form}
                   getData={getData}
-                  employeeSelected={employeeSelected}
+                  puestoSelected={puestoSelected}
+                  areas={areas}
                 />
               </div>
             </Modal>
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <VerDetallesPuestos employeeSelected={employeeSelected} />
+                <VerDetallesPuestos puestoSelected={puestoSelected} />
               </div>
             </Modal>
           )}

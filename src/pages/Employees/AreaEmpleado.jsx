@@ -8,30 +8,36 @@ const AreaEmpleado = ({employeeSelected}) => {
         '/areas',
         axios
       );
+    const [puestos, puestosLoading, getPuestos] = useGet(
+        '/puestos',
+        axios
+      );
 
-  return (
-    <div className="checkboxColumn">
-
-    {!loading ? (
-     areas.areas.map((rep, index) => {
-        return (
-          <div key={index} className="d-flex">
-            <input
-              type="checkbox"
-              value={rep._id}
-              checked={employeeSelected.areas?.includes(rep._id)}
-            />
-            <label title="Seleccione al menos una" className="ms-2">
-              {rep.nombre}
-            </label>
-          </div>
-        );
-      })
-    ) : (
-      <Spin spinning={loading}/>
-    )}
-  </div>
-  )
+      return (
+        <div className="areaList">
+          {!loading && !puestosLoading ? (
+            <ul>
+              {(() => {
+                const uniqueAreas = new Set();
+                return employeeSelected.puestos.map((puestoId) => {
+                  const areaId = puestos.puestos.find((p) => p._id === puestoId)?.area;
+                  if (areaId && !uniqueAreas.has(areaId)) {
+                    uniqueAreas.add(areaId);
+                    const area = areas.areas.find((v) => v._id === areaId);
+                    return (
+                      <li key={area._id}>{area.nombre}</li>
+                    );
+                  }
+                  return null;
+                });
+              })()}
+            </ul>
+          ) : (
+            <Spin spinning={loading || puestosLoading} />
+          )}
+        </div>
+      );
+      
 }
 
 export default AreaEmpleado

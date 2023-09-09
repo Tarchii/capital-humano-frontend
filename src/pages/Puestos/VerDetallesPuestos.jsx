@@ -1,13 +1,13 @@
 import React from 'react'
 
-const VerDetallesPuestos = ({employeeSelected}) => {
+const VerDetallesPuestos = ({puestoSelected}) => {
   return (
     <div>
-    <p><strong>Nombre: </strong> {employeeSelected.nombre}</p>
-    <p><strong>Descripcion: </strong> {employeeSelected.descripcion}</p>
-    <p><strong>Área: </strong> {employeeSelected.area}</p>
-    <p><strong>Sueldo: </strong> {employeeSelected.sueldoBase}</p>
-    <p><strong>Inicio: </strong> {employeeSelected.inicio}</p>
+    <p><strong>Nombre: </strong> {puestoSelected.nombre}</p>
+    <p><strong>Descripcion: </strong> {puestoSelected.descripcion}</p>
+    <p><strong>Área: </strong> {puestoSelected.area.nombre}</p>
+    <p><strong>Sueldo: </strong> {puestoSelected.sueldoBase}</p>
+    <p><strong>Inicio: </strong> {puestoSelected.inicio}</p>
 
 </div>
   )

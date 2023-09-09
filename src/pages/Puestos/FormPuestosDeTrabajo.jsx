@@ -4,10 +4,11 @@ import { Option } from "antd/es/mentions";
 import { toast } from "react-toastify";
 import axios from "../../config/axios";
 
-const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => {
+const FormPuestosDeTrabajo = ({ closeModal, form, areas, getData, puestoSelected}) => {
  
     const onFinish = async (values) => {
-        if(employeeSelected == undefined){
+        values = {...values, area: areas.find(area => area.nombre == values.area)._id}
+        if(puestoSelected == undefined){
        
             try {
               const respuesta = await axios.post("/puestos", values);
@@ -19,9 +20,8 @@ const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => 
               toast.error(error.response?.data.message || error.message);
             }
         }else{
-           
            try {
-               const respuesta = await axios.put(`/puestos/${employeeSelected._id}`, values);
+               const respuesta = await axios.put(`/puestos/${puestoSelected._id}`, values);
                closeModal()
                getData();
                form.resetFields(); // Limpiar campos
@@ -30,7 +30,7 @@ const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => 
                toast.error(error.response?.data.message || error.message);
              }
         }
-         };
+        };
        
          const onFinishFailed = (errorInfo) => {
            console.log("Failed:", errorInfo);
@@ -92,7 +92,16 @@ const FormPuestosDeTrabajo = ({ closeModal, form,getData, employeeSelected}) => 
                    message: "Please input your name!",
                  },
                ]}
-             ></Form.Item>
+             >
+              <Select 
+              placeholder="Seleccione un area"
+              >
+                  {areas.map((area) => (
+                    <Option key={area.id} value={area.nombre}>
+                      </Option>
+                  ))}
+              </Select>
+             </Form.Item>
        
              <Form.Item
                label="Sueldo Base"

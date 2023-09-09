@@ -12,12 +12,12 @@ const ViewDetails = ({employeeSelected}) => {
         <p><strong>Legajo: </strong> {employeeSelected.legajo}</p>
         <p><strong>Dni: </strong> {employeeSelected.dni}</p>
         <p><strong>Genero: </strong> {employeeSelected.genero}</p>
-        <p><strong>Obras Sociales: </strong> </p>
+        <p><strong>Obra/s Sociale/s: </strong> </p>
         <ObraSocialEmpleado employeeSelected={employeeSelected}/>
-        <p><strong>Áreas: </strong> </p>
-        <AreaEmpleado employeeSelected={employeeSelected}/>
-        <p><strong>Puestos: </strong> </p>
+        <p><strong>Puesto/s: </strong> </p>
         <PuestosEmpleados employeeSelected={employeeSelected}/>
+        <p><strong>Área/s: </strong> </p>
+        <AreaEmpleado employeeSelected={employeeSelected}/>
     </div>
   )
 }

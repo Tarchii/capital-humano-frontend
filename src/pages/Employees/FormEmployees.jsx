@@ -296,7 +296,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
         }
       </Form.Item>
 
-      <Form.Item
+      {/* <Form.Item
         label="Areas"
         name="areas"
       >
@@ -337,7 +337,7 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
             <Spin spinning={loading} />
           )
         }
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item
         wrapperCol={{
