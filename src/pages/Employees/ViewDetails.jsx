@@ -19,8 +19,8 @@ const ViewDetails = ({employeeSelected}) => {
         <PuestosEmpleados employeeSelected={employeeSelected}/>
         <p><strong>Área/s: </strong> </p>
         <AreaEmpleado employeeSelected={employeeSelected}/>
-        {/* <p><strong>Departamento/s: </strong> </p>
-        <DepartamentoEmpleado employeeSelected={employeeSelected}/> */}
+        <p><strong>Departamento/s: </strong> </p>
+        <DepartamentoEmpleado employeeSelected={employeeSelected}/>
     </div>
   )
 }

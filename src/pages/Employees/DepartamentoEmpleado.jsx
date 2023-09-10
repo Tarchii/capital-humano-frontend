@@ -4,7 +4,7 @@ import useGet from ".././../hooks/useGet";
 import { Spin } from 'antd';
 
 const DepartamentoEmpleado = ({employeeSelected}) => {
-    const [departamentos, loading, getDepartamentos] = useGet(
+    const [departamentos, departamentosLoading, getDepartamentos] = useGet(
         '/departamentos',
         axios
       );
@@ -13,31 +13,37 @@ const DepartamentoEmpleado = ({employeeSelected}) => {
         axios
       );
 
-      return (
-        <div className="departamentoList">
-          {!loading && !areasLoading ? (
-            <ul>
-              {(() => {
-                const uniqueDepartamentos = new Set();
-                return employeeSelected.areas.map((areaId) => {
-                  const departamentoId = areas.areas.find((p) => p._id === areaId)?.departamento;
-                  if (departamentoId && !uniqueDepartamentos.has(departamentoId)) {
-                    uniqueDepartamentos.add(departamentoId);
-                    const departamento = departamentos.departamentos.find((v) => v._id === departamentoId);
-                    return (
-                      <li key={departamento._id}>{departamento.nombre}</li>
-                    );
-                  }
-                  return null;
-                });
-              })()}
-            </ul>
-          ) : (
-            <Spin spinning={loading || areasLoading} />
-          )}
-        </div>
-      );
-      
-}
+    const [puestos, puestosLoading, getPuestos] = useGet(
+        '/puestos',
+        axios
+    );
 
+    return (
+      <div className="departamentosList">
+        {!areasLoading && !puestosLoading && !departamentosLoading ? (
+          <ul>
+            {(() => {
+              const uniqueAreas = new Set();
+              return employeeSelected.puestos.map((puestoId) => {
+                
+                const areaId = puestos.puestos.find((p) => p._id === puestoId)?.area;
+                if (areaId && !uniqueAreas.has(areaId)) {
+                  uniqueAreas.add(areaId);
+                  const area = areas.areas.find((v) => v._id === areaId);
+                  const departamento =  departamentos.departamentos.find((c) => c._id === area.departamento);
+                  return (
+                    <li key={departamento._id}>{departamento.nombre}</li>
+                  );
+                }
+                return null;
+              });
+            })()}
+          </ul>
+        ) : (
+          <Spin spinning={departamentosLoading || puestosLoading || areasLoading} />
+        )}
+      </div>
+    );
+  };
+  
 export default DepartamentoEmpleado

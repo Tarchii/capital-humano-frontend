@@ -114,10 +114,11 @@ const Reports = () => {
     let startY = 20;
     rolesData.forEach((role) => {
       doc.text(`Nombre: ${role.nombre}`, 10, startY);
-      doc.text(`Descrioción: ${role.descripcion}`, 10, startY + 10);
+      doc.text(`Descripción: ${role.descripcion}`, 10, startY + 10);
       doc.text(`Sueldo Base: ${role.sueldoBase}`, 10, startY + 20);
       doc.text(`Inicio: ${role.inicio}`, 10, startY + 30);
-      doc.text(`Área: ${role.area}`, 10, startY + 40);
+      const areaName = areaData.find((area) => area._id === role.area)?.nombre || 'No asignado';
+      doc.text(`Área: ${areaName}`, 10, startY + 40);
       startY += 50;
     });
     doc.save('InformeRoles.pdf');
@@ -144,7 +145,8 @@ const Reports = () => {
     areasData.forEach((area) => {
       doc.text(`Nombre: ${area.nombre}`, 10, startY);
       doc.text(`Descripción: ${area.descripcion}`, 10, startY + 10);
-      doc.text(`Departamento: ${area.departamento}`, 10, startY + 20);
+      const departamentoName = buData.find((departamento) => departamento._id === area.departamento)?.nombre || 'No asignado';
+      doc.text(`Departamento: ${departamentoName}`, 10, startY + 20);
       startY += 30;
     });
     doc.save('InformeAreas.pdf');
