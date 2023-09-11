@@ -7,7 +7,10 @@ import axios from "../../config/axios";
 const FormPuestosDeTrabajo = ({ closeModal, form, areas, getData, puestoSelected}) => {
  
     const onFinish = async (values) => {
-        values = {...values, area: areas.find(area => area.nombre == values.area)._id}
+     console.log(values);
+     console.log(areas);
+        values = values.area.hasOwnProperty('id')? {...values, area: areas.find(area => area.nombre == values.area.nombre)._id}: {...values, area: areas.find(area => area.nombre == values.area)._id}
+        
         if(puestoSelected == undefined){
        
             try {

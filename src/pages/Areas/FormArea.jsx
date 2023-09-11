@@ -7,7 +7,9 @@ import axios from "../../config/axios";
 const FormArea = ({ closeModal, form,getData, employeeSelected, departamentos}) => {
  
     const onFinish = async (values) => {
-      values = {...values, departamento: departamentos.find(departamento => departamento.nombre == values.departamento)._id}
+      console.log(values);
+      console.log(departamentos);
+      values = values.departamento.hasOwnProperty('id')?{...values, departamento: departamentos.find(departamento => departamento.nombre == values.departamento.nombre)._id}: {...values, departamento: departamentos.find(departamento => departamento.nombre == values.departamento)._id}
         if(employeeSelected == undefined){
        
             try {
