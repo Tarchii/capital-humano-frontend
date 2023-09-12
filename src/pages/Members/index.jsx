@@ -11,9 +11,6 @@ import juan_bustos_thames from "../../assets/juan_bustos_thames.jpeg";
 import luciana_olmos from "../../assets/luciana_olmos.jpeg";
 
 const Members = () => {
-
-
-    console.log("bnbon")
   return (
     <AppLayout>
       <Container>

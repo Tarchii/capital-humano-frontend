@@ -6,7 +6,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import FormArea from "./FormArea";
-import ViewDetailsArea from "./ViewDetailsArea";
+import ViewDetailsModal from "../../components/ViewDetailsModal";
 
 const defaultFilterValue = {
   name: "",
@@ -39,8 +39,8 @@ const Areas = () => {
           },
         };
       });
-      setData(areas)
-      setDepartamentos(departamentosInfo.data.departamentos)
+      setData(areas);
+      setDepartamentos(departamentosInfo.data.departamentos);
       //setData(info.data.areas);
     } catch (error) {
       console.log(error.message);
@@ -56,7 +56,9 @@ const Areas = () => {
 
     return data.filter((record) => {
       const nameMatch = record.nombre.startsWith(filterValues.name);
-      const departamentoMatch = record.departamento.nombre.startsWith(filterValues.departamento);
+      const departamentoMatch = record.departamento.nombre.startsWith(
+        filterValues.departamento
+      );
 
       return nameMatch && departamentoMatch;
       //return nameMatch;
@@ -199,7 +201,11 @@ const Areas = () => {
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <ViewDetailsArea employeeSelected={employeeSelected} />
+                <ViewDetailsModal
+                  // employeeSelected={employeeSelected}
+                  title={"Área"}
+                  dataObject={employeeSelected}
+                />
               </div>
             </Modal>
           )}

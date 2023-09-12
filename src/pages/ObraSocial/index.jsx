@@ -6,7 +6,7 @@ import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import AppLayout from "../../components/layout/AppLayout";
 import FormObraSocial from "./FormObraSocial";
-import ViewDetailsObraSocial from "./ViewDetailsObraSocial";
+import ViewDetailsModal from "../../components/ViewDetailsModal";
 
 const defaultFilterValue = {
   name: "",
@@ -193,7 +193,10 @@ const ObraSocial = () => {
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <ViewDetailsObraSocial employeeSelected={employeeSelected} />
+                <ViewDetailsModal
+                  title={"Obra Social"}
+                  dataObject={employeeSelected}
+                />
               </div>
             </Modal>
           )}

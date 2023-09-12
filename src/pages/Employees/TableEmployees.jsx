@@ -9,8 +9,8 @@ import {
 } from "@ant-design/icons";
 import axios from "../../config/axios";
 import FormEmployess from "./FormEmployees";
-import ViewDetails from "./ViewDetails";
 import { toast } from "react-toastify";
+import ViewDetailsModal from "../../components/ViewDetailsModal";
 
 const defaultFilterValue = {
   dni: "",
@@ -225,7 +225,10 @@ const TableEmployees = () => {
       ) : (
         <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
           <div style={{ margin: "20px" }}>
-            <ViewDetails employeeSelected={employeeSelected} />
+            <ViewDetailsModal
+              title={"Empleado"}
+              dataObject={employeeSelected}
+            />
           </div>
         </Modal>
       )}

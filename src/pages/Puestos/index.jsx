@@ -6,7 +6,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import FormPuestosDeTrabajo from "./FormPuestosDeTrabajo";
-import VerDetallesPuestos from "./VerDetallesPuestos";
+import ViewDetailsModal from "../../components/ViewDetailsModal";
 
 const defaultFilterValue = {
   name: "",
@@ -215,7 +215,10 @@ const Puestos = () => {
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <VerDetallesPuestos puestoSelected={puestoSelected} />
+                <ViewDetailsModal
+                  title={"Puesto de Trabahjo"}
+                  dataObject={puestoSelected}
+                />
               </div>
             </Modal>
           )}

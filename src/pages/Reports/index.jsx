@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Button} from 'antd';
-import axios from '../../config/axios';
-import jsPDF from 'jspdf';
+import React, { useEffect, useState } from "react";
+import { Button } from "antd";
+import axios from "../../config/axios";
+import jsPDF from "jspdf";
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
 
@@ -14,7 +14,7 @@ const Reports = () => {
 
   const getEmployeeData = async () => {
     try {
-      const info = await axios.get('/empleados');
+      const info = await axios.get("/empleados");
       setEmployeeData(info.data.empleados);
     } catch (error) {
       console.log(error.message);
@@ -27,7 +27,7 @@ const Reports = () => {
 
   const getHealthInsuranceData = async () => {
     try {
-      const info = await axios.get('/obraSocial');
+      const info = await axios.get("/obraSocial");
       setHealthInsuranceData(info.data.obraSociales);
     } catch (error) {
       console.log(error.message);
@@ -40,7 +40,7 @@ const Reports = () => {
 
   const getRoleData = async () => {
     try {
-      const info = await axios.get('/puestos');
+      const info = await axios.get("/puestos");
       setRoleData(info.data.puestos);
     } catch (error) {
       console.log(error.message);
@@ -53,7 +53,7 @@ const Reports = () => {
 
   const getBUData = async () => {
     try {
-      const info = await axios.get('/departamentos');
+      const info = await axios.get("/departamentos");
       setBUData(info.data.departamentos);
     } catch (error) {
       console.log(error.message);
@@ -66,7 +66,7 @@ const Reports = () => {
 
   const getAreaData = async () => {
     try {
-      const info = await axios.get('/areas');
+      const info = await axios.get("/areas");
       setAreaData(info.data.areas);
     } catch (error) {
       console.log(error.message);
@@ -77,10 +77,9 @@ const Reports = () => {
     getAreaData();
   }, []);
 
-
   const handleGenerateEmployeePDF = () => {
     const doc = new jsPDF();
-    doc.text('Informe de Empleados', 10, 10);
+    doc.text("Informe de Empleados", 10, 10);
     const employeesData = employeeData;
     let startY = 20;
     employeesData.forEach((employee) => {
@@ -89,12 +88,12 @@ const Reports = () => {
       doc.text(`Legajo: ${employee.legajo}`, 10, startY + 20);
       startY += 30;
     });
-    doc.save('InformeEmpleados.pdf');
+    doc.save("InformeEmpleados.pdf");
   };
 
   const handleGenerateHealthInsurancePDF = () => {
     const doc = new jsPDF();
-    doc.text('Informe de Obras Sociales', 10, 10);
+    doc.text("Informe de Obras Sociales", 10, 10);
     const healthInsurancesData = healthInsuranceData;
     let startY = 20;
     healthInsurancesData.forEach((healthInsurance) => {
@@ -104,12 +103,12 @@ const Reports = () => {
       doc.text(`CUIT: ${healthInsurance.cuit}`, 10, startY + 30);
       startY += 40;
     });
-    doc.save('InformeObrasSociales.pdf');
+    doc.save("InformeObrasSociales.pdf");
   };
 
   const handleGenerateRolePDF = () => {
     const doc = new jsPDF();
-    doc.text('Informe de Puestos de trabajo', 10, 10);
+    doc.text("Informe de Puestos de trabajo", 10, 10);
     const rolesData = roleData;
     let startY = 20;
     rolesData.forEach((role) => {
@@ -117,16 +116,18 @@ const Reports = () => {
       doc.text(`Descripción: ${role.descripcion}`, 10, startY + 10);
       doc.text(`Sueldo Base: ${role.sueldoBase}`, 10, startY + 20);
       doc.text(`Inicio: ${role.inicio}`, 10, startY + 30);
-      const areaName = areaData.find((area) => area._id === role.area)?.nombre || 'No asignado';
+      const areaName =
+        areaData.find((area) => area._id === role.area)?.nombre ||
+        "No asignado";
       doc.text(`Área: ${areaName}`, 10, startY + 40);
       startY += 50;
     });
-    doc.save('InformeRoles.pdf');
+    doc.save("InformeRoles.pdf");
   };
 
   const handleGenerateBusinessUnitPDF = () => {
     const doc = new jsPDF();
-    doc.text('Informe de Departamentos de trabajo', 10, 10);
+    doc.text("Informe de Departamentos de trabajo", 10, 10);
     const busData = buData;
     let startY = 20;
     busData.forEach((bu) => {
@@ -134,46 +135,50 @@ const Reports = () => {
       doc.text(`Descripción: ${bu.descripcion}`, 10, startY + 10);
       startY += 20;
     });
-    doc.save('InformeDepartamentos.pdf');
+    doc.save("InformeDepartamentos.pdf");
   };
 
   const handleGenerateAreaPDF = () => {
     const doc = new jsPDF();
-    doc.text('Informe de Áreas de trabajo', 10, 10);
+    doc.text("Informe de Áreas de trabajo", 10, 10);
     const areasData = areaData;
     let startY = 20;
     areasData.forEach((area) => {
       doc.text(`Nombre: ${area.nombre}`, 10, startY);
       doc.text(`Descripción: ${area.descripcion}`, 10, startY + 10);
-      const departamentoName = buData.find((departamento) => departamento._id === area.departamento)?.nombre || 'No asignado';
+      const departamentoName =
+        buData.find((departamento) => departamento._id === area.departamento)
+          ?.nombre || "No asignado";
       doc.text(`Departamento: ${departamentoName}`, 10, startY + 20);
       startY += 30;
     });
-    doc.save('InformeAreas.pdf');
+    doc.save("InformeAreas.pdf");
   };
 
   return (
     <>
-    <AppLayout>
-      <Container>
-        <PageTitle>Reportes</PageTitle>
-        <ButtonContainer>
-          <ButtonStyled onClick={handleGenerateEmployeePDF}>Generar Informe de Empleados en PDF</ButtonStyled>
-        </ButtonContainer>
-        <ButtonContainer>
-          <ButtonStyled onClick={handleGenerateHealthInsurancePDF}>Generar Informe de Obras Sociales en PDF</ButtonStyled>
-        </ButtonContainer>
-        <ButtonContainer>
-          <ButtonStyled onClick={handleGenerateRolePDF}>Generar Informe de Puestos de Trabajo en PDF</ButtonStyled>
-        </ButtonContainer>
-        <ButtonContainer>
-          <ButtonStyled onClick={handleGenerateBusinessUnitPDF}>Generar Informe de Departamentos de Trabajo en PDF</ButtonStyled>
-        </ButtonContainer>
-        <ButtonContainer>
-          <ButtonStyled onClick={handleGenerateAreaPDF}>Generar Informe de Áreas de Trabajo en PDF</ButtonStyled>
-        </ButtonContainer>
-      </Container>
-    </AppLayout>
+      <AppLayout>
+        <Container>
+          <PageTitle>Reportes</PageTitle>
+          <ButtonsWrapper>
+            <ButtonStyled onClick={handleGenerateEmployeePDF}>
+              Generar Informe de Empleados en PDF
+            </ButtonStyled>
+            <ButtonStyled onClick={handleGenerateHealthInsurancePDF}>
+              Generar Informe de Obras Sociales en PDF
+            </ButtonStyled>
+            <ButtonStyled onClick={handleGenerateRolePDF}>
+              Generar Informe de Puestos de Trabajo en PDF
+            </ButtonStyled>
+            <ButtonStyled onClick={handleGenerateBusinessUnitPDF}>
+              Generar Informe de Departamentos de Trabajo en PDF
+            </ButtonStyled>
+            <ButtonStyled onClick={handleGenerateAreaPDF}>
+              Generar Informe de Áreas de Trabajo en PDF
+            </ButtonStyled>
+          </ButtonsWrapper>
+        </Container>
+      </AppLayout>
     </>
   );
 };
@@ -192,8 +197,13 @@ const PageTitle = styled.h1`
   padding: 10px;
 `;
 
-const ButtonContainer = styled.div`
-  margin-top: 20px;
+const ButtonsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
 `;
 
 const ButtonStyled = styled(Button)`
@@ -203,12 +213,15 @@ const ButtonStyled = styled(Button)`
   padding: 10px 20px;
   border-radius: 5px;
   font-weight: bold;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
 
   &:hover {
-    background-color: #40a9ff;
+    background-color: #00111f;
   }
 `;
-
 
 export default Reports;

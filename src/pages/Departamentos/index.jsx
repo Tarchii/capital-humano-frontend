@@ -6,7 +6,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 import FormDepartamento from "./FormDepartamento";
-import ViewDetailsDepartamento from "./ViewDetailsDepartamento";
+import ViewDetailsModal from "../../components/ViewDetailsModal";
 
 const defaultFilterValue = {
   name: "",
@@ -131,7 +131,9 @@ const Departamentos = () => {
         <PageTitle>
           <Header>
             <PageTitle>Departamentos de trabajo</PageTitle>
-            <Button onClick={() => setIsModalOpen(true)}>Agregar departamento</Button>
+            <Button onClick={() => setIsModalOpen(true)}>
+              Agregar departamento
+            </Button>
           </Header>
           <SearchContainer>
             <Input
@@ -172,7 +174,10 @@ const Departamentos = () => {
           ) : (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>
-                <ViewDetailsDepartamento employeeSelected={employeeSelected} />
+                <ViewDetailsModal
+                  title={"Departamento"}
+                  dataObject={employeeSelected}
+                />
               </div>
             </Modal>
           )}
