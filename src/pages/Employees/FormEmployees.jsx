@@ -67,8 +67,8 @@ const FormEmployess = ({ closeModal, form, getData, employeeSelected}) => {
   
   useEffect(() => {
     if (employeeSelected !== true) {
-      setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales);
-      setPuestosSeleccionados(employeeSelected?.puestos)
+      setObrasSocialesSeleccionadas(employeeSelected?.obrasSociales.map(obj=>obj._id));
+      setPuestosSeleccionados(employeeSelected?.puestos.map(obj=>obj._id))
       setAreasSeleccionadas(employeeSelected?.areas)
       setDepartamentosSeleccionados(employeeSelected?.departamentos)
     }else {
