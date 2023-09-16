@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Spin, Table } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
@@ -21,6 +21,7 @@ const Areas = () => {
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
+  const [filtrado, setFiltrado] = useState([])
 
   const getData = async () => {
     try {
@@ -41,7 +42,7 @@ const Areas = () => {
       });
       setData(areas);
       setDepartamentos(departamentosInfo.data.departamentos);
-      //setData(info.data.areas);
+      setFiltrado(areas)
     } catch (error) {
       console.log(error.message);
     }
@@ -50,6 +51,22 @@ const Areas = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+ 
+    if(filterValues.name !== ""){
+  
+     let results = data.filter((em) =>
+        em.nombre.toLowerCase().includes(filterValues.name)
+      );
+      setFiltrado(results);
+      return
+    }else if(filterValues.name==""){
+      setFiltrado(data)
+      return
+    }
+  
+  }, [filterValues]);
 
   const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
@@ -170,11 +187,17 @@ const Areas = () => {
               allowClear
             />
           </SearchContainer>
+          {
+            filtrado.length == 0 ?
+            <Spin/>
+            :
+
           <Table
-            dataSource={filterTableData(data, filterValues)}
+            dataSource={filtrado}
             columns={columns}
             rowKey={(record) => record._id}
           />
+          }
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>

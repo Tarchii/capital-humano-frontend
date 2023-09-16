@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Spin, Table } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
@@ -20,11 +20,13 @@ const ObraSocial = () => {
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
+  const [filtrado, setFiltrado] = useState([])
 
   const getData = async () => {
     try {
       const info = await axios.get("/obraSocial");
       setData(info.data.obraSociales);
+      setFiltrado(info.data.obraSociales)
     } catch (error) {
       console.log(error.message);
     }
@@ -32,6 +34,38 @@ const ObraSocial = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+ 
+    if(filterValues.name !== ""){
+  
+     let results = data.filter((em) =>
+        em.nombre.toLowerCase().includes(filterValues.name)
+      );
+      setFiltrado(results);
+      return
+    }else if(filterValues.name==""){
+      setFiltrado(data)
+      return
+    }
+  
+  }, [filterValues.name]);
+
+  useEffect(() => {
+ 
+    if(filterValues.cuit !== ""){
+  
+     let results = data.filter((em) =>
+        em.cuit.toLowerCase().includes(filterValues.cuit)
+      );
+      setFiltrado(results);
+      return
+    }else if(filterValues.cuit==""){
+      setFiltrado(data)
+      return
+    }
+  
+  }, [filterValues.cuit]);
 
   const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
@@ -149,6 +183,7 @@ const ObraSocial = () => {
           <SearchContainer>
             <Input
               placeholder="Buscar por Nombre"
+              disabled={filterValues.cuit!==""?true:false}
               value={filterValues.name}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, name: e.target.value })
@@ -157,6 +192,7 @@ const ObraSocial = () => {
             />
             <Input
               placeholder="Buscar por CUIT"
+              disabled={filterValues.name!==""?true:false}
               value={filterValues.cuit}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, cuit: e.target.value })
@@ -165,10 +201,15 @@ const ObraSocial = () => {
               allowClear
             />
           </SearchContainer>
+          {
+            filtrado.length==0?
+            <Spin/>:
+
           <Table
-            dataSource={filterTableData(data, filterValues)}
-            columns={columns}
+          dataSource={filtrado}
+          columns={columns}
           />
+        }
           {employeeSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>

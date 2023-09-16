@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Spin, Table } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "../../config/axios";
@@ -21,6 +21,7 @@ const Puestos = () => {
   const [puestoSelected, setPuestoSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
   const [filterValues, setFilterValues] = useState(defaultFilterValue);
+  const [filtrado, setFiltrado] = useState([])
 
   const getData = async () => {
     try {
@@ -41,6 +42,7 @@ const Puestos = () => {
       });
       setData(puestos);
       setAreas(areasInfo.data.areas);
+      setFiltrado(puestos);
     } catch (error) {
       console.log(error.message);
     }
@@ -49,6 +51,38 @@ const Puestos = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+ 
+    if(filterValues.name !== ""){
+  
+     let results = data.filter((em) =>
+        em.nombre.toLowerCase().includes(filterValues.name)
+      );
+      setFiltrado(results);
+      return
+    }else if(filterValues.name==""){
+      setFiltrado(data)
+      return
+    }
+  
+  }, [filterValues.name]);
+
+  useEffect(() => {
+ 
+    if(filterValues.area !== ""){
+  
+     let results = data.filter((em) =>
+        em.area.nombre.toLowerCase().includes(filterValues.area)
+      );
+      setFiltrado(results);
+      return
+    }else if(filterValues.area==""){
+      setFiltrado(data)
+      return
+    }
+  
+  }, [filterValues.area]);
 
   const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
@@ -169,6 +203,7 @@ const Puestos = () => {
           <SearchContainer>
             <Input
               placeholder="Buscar por Nombre"
+              disabled={filterValues.area!==""?true:false}
               value={filterValues.name}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, name: e.target.value })
@@ -177,6 +212,7 @@ const Puestos = () => {
             />
             <Input
               placeholder="Buscar por Área"
+              disabled={filterValues.name!==""?true:false}
               value={filterValues.area}
               onChange={(e) =>
                 setFilterValues({ ...filterValues, area: e.target.value })
@@ -184,11 +220,17 @@ const Puestos = () => {
               allowClear
             />
           </SearchContainer>
+          {
+            filtrado.length == 0 ?
+            <Spin/>
+            :
+
           <Table
-            dataSource={filterTableData(data, filterValues)}
+            dataSource={filtrado}
             columns={columns}
             rowKey={(record) => record._id}
           />
+          }
           {puestoSelected == undefined && modeEdition == false ? (
             <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
               <div style={{ margin: "20px" }}>

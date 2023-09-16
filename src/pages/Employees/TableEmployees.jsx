@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Form, Modal, Table, Input } from "antd";
+import { Button, Form, Modal, Table, Input, Spin } from "antd";
 import {
   UploadOutlined,
   DeleteOutlined,
@@ -25,18 +25,69 @@ const TableEmployees = () => {
   const [employeeSelected, setEmployeeSelected] = useState(undefined);
   const [modeEdition, setModeEdition] = useState(false);
   const [filterValues, setFilterValue] = useState(defaultFilterValue);
+  const [filtrado, setFiltrado] = useState([])
 
   const getData = async () => {
     try {
       const info = await axios.get("/empleados");
       setData(info.data.empleados);
+      setFiltrado(info.data.empleados)
     } catch (error) {
       console.log(error.message);
     }
   };
   useEffect(() => {
     getData();
+   
   }, []);
+
+useEffect(() => {
+ 
+  if(filterValues.apellido !== ""){
+
+   let results = data.filter((em) =>
+      em.apellido.toLowerCase().includes(filterValues.apellido)
+    );
+    setFiltrado(results);
+    return
+  }else if(filterValues.apellido==""){
+    setFiltrado(data)
+    return
+  }
+
+}, [filterValues.apellido]);
+
+useEffect(() => {
+
+  if(filterValues.legajo.toString() !== ""){
+
+   let results = data.filter((em) =>
+      em.legajo.toString().includes(filterValues.legajo.toString())
+    );
+    setFiltrado(results);
+    
+  }else if(filterValues.legajo.toString()==""){
+    setFiltrado(data)
+
+  }
+
+}, [filterValues.legajo]);
+
+useEffect(() => {
+
+  if(filterValues.dni.toString() !== ""){
+
+   let results = data.filter((em) =>
+      em.dni.toString().includes(filterValues.dni.toString())
+    );
+    setFiltrado(results);
+    
+  }else if(filterValues.dni.toString()==""){
+    setFiltrado(data)
+
+  }
+
+}, [filterValues.dni]);
 
   const filterTableData = useCallback((data, filterValues) => {
     if (!filterValues) return data;
@@ -170,6 +221,7 @@ const TableEmployees = () => {
       <SearchContainer>
         <Input
           placeholder="Buscar por Legajo"
+          disabled={filterValues.dni!==""||filterValues.apellido!==""?true:false}
           value={filterValues.legajo}
           onChange={(e) =>
             setFilterValue({ ...filterValues, legajo: e.target.value })
@@ -179,6 +231,7 @@ const TableEmployees = () => {
         />
         <Input
           placeholder="Buscar por Apellido"
+          disabled={filterValues.legajo!==""||filterValues.dni!==""?true:false}
           value={filterValues.apellido}
           onChange={(e) =>
             setFilterValue({ ...filterValues, apellido: e.target.value })
@@ -187,6 +240,7 @@ const TableEmployees = () => {
         />
         <Input
           placeholder="Buscar por DNI"
+          disabled={filterValues.apellido!==""||filterValues.legajo!==""?true:false}
           value={filterValues.dni}
           onChange={(e) =>
             setFilterValue({ ...filterValues, dni: e.target.value })
@@ -195,11 +249,17 @@ const TableEmployees = () => {
           type="number"
         />
       </SearchContainer>
-      <Table
-        dataSource={filterTableData(data, filterValues)}
-        columns={columns}
-        rowKey={(record) => record._id}
-      />
+      {
+        filtrado.length==0?
+        <Spin/>
+       :
+       <Table
+       dataSource={filtrado}
+       columns={columns}
+       rowKey={(record) => record._id}
+     />
+      
+      }
       {employeeSelected == undefined && modeEdition == false ? (
         <Modal visible={isModalOpen} onCancel={closeModal} footer={null}>
           <div style={{ margin: "20px" }}>
