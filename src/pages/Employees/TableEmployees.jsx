@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Form, Modal, Table, Input, Spin } from "antd";
+import { Button, Form, Modal, Table, Input, Spin, Select } from "antd";
+import { Option } from "antd/es/mentions";
 import {
   UploadOutlined,
   DeleteOutlined,
@@ -62,7 +63,8 @@ useEffect(() => {
   if(filterValues.legajo.toString() !== ""){
 
    let results = data.filter((em) =>
-      em.legajo.toString().includes(filterValues.legajo.toString())
+      em.legajo.toString().includes(filterValues.legajo.toString())||
+      em.dni.toString().includes(filterValues.legajo.toString())
     );
     setFiltrado(results);
     
@@ -75,14 +77,17 @@ useEffect(() => {
 
 useEffect(() => {
 
-  if(filterValues.dni.toString() !== ""){
+  if(filterValues.dni !== ""){
 
-   let results = data.filter((em) =>
-      em.dni.toString().includes(filterValues.dni.toString())
+   let results = data.filter((e) =>{
+    return e.puestos.some(p=>p.nombre.includes(filterValues.dni.toLowerCase())) ||
+     e.puestos.some(p=>p.area.nombre.includes(filterValues.dni.toLowerCase())) ||
+     e.puestos.some(p=>p.area.departamento.nombre.toLowerCase().includes(filterValues.dni.toLowerCase()))
+   }
     );
     setFiltrado(results);
     
-  }else if(filterValues.dni.toString()==""){
+  }else if(filterValues.dni==""){
     setFiltrado(data)
 
   }
@@ -220,7 +225,7 @@ useEffect(() => {
       </Header>
       <SearchContainer>
         <Input
-          placeholder="Buscar por Legajo"
+          placeholder="Buscar por Legajo o DNI"
           disabled={filterValues.dni!==""||filterValues.apellido!==""?true:false}
           value={filterValues.legajo}
           onChange={(e) =>
@@ -239,15 +244,16 @@ useEffect(() => {
           allowClear
         />
         <Input
-          placeholder="Buscar por DNI"
+          placeholder="Buscar por Area/Dpto/Puesto"
           disabled={filterValues.apellido!==""||filterValues.legajo!==""?true:false}
           value={filterValues.dni}
           onChange={(e) =>
             setFilterValue({ ...filterValues, dni: e.target.value })
           }
           allowClear
-          type="number"
+        
         />
+      
       </SearchContainer>
       {
         filtrado.length==0?
