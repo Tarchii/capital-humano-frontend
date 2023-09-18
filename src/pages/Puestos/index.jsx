@@ -27,17 +27,26 @@ const Puestos = () => {
     try {
       const info = await axios.get("/puestos");
       const areasInfo = await axios.get("/areas");
+      const empleadosInfo = await axios.get("/empleados");
       const puestos = info.data.puestos.map((puesto) => {
         const area = areasInfo.data.areas.find(
           (area) => area._id === puesto.area
         );
+        const empleadosAsociados = empleadosInfo.data.empleados
+    .filter((empleado) =>
+      empleado.puestos.some((puestoEmpleado) => puestoEmpleado._id === puesto._id)
+    )
+    .map((empleado) => ({
+      nombre: empleado.nombre,
+      apellido: empleado.apellido,
+      legajo: empleado.legajo,
+    }));
         return {
           ...puesto,
           area: {
-            id: area._id,
             nombre: area.nombre,
-            value: area.nombre,
           },
+          empleados : empleadosAsociados,
         };
       });
       setData(puestos);
@@ -102,6 +111,7 @@ const Puestos = () => {
     setModeEdition(false);
   };
 
+  
   const ViewDetailsPuesto = (puesto) => {
     setPuestoSelected(puesto);
     setIsModalOpen(true);

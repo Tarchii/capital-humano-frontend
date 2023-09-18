@@ -4,6 +4,7 @@ import axios from "../../config/axios";
 import jsPDF from "jspdf";
 import styled from "styled-components";
 import AppLayout from "../../components/layout/AppLayout";
+import 'jspdf-autotable';
 
 const Reports = () => {
   const [employeeData, setEmployeeData] = useState([]);
@@ -77,82 +78,262 @@ const Reports = () => {
     getAreaData();
   }, []);
 
+ 
   const handleGenerateEmployeePDF = () => {
     const doc = new jsPDF();
-    doc.text("Informe de Empleados", 10, 10);
+    doc.setFontSize(18);
+    doc.text("Informe de Empleados", 20, 20);
+    
     const employeesData = employeeData;
-    let startY = 20;
+    
+    const headers = ['Empleado', 'DNI', 'Legajo', 'Puesto', 'Área', 'Departamento'];
+    const rows = [];
+    
+    const puestoCounts = {};
+    const areaCounts = {};
+    const departamentoCounts = {};
+    
     employeesData.forEach((employee) => {
-      doc.text(`Nombre: ${employee.nombre} ${employee.apellido}`, 10, startY);
-      doc.text(`DNI: ${employee.dni}`, 10, startY + 10);
-      doc.text(`Legajo: ${employee.legajo}`, 10, startY + 20);
-      startY += 30;
+      const puesto = employee.puestos[0]?.nombre || "No asignado";
+      const area = employee.puestos[0]?.area?.nombre || "No asignado";
+      const departamento = employee.puestos[0]?.area?.departamento?.nombre || "No asignado";
+    
+      puestoCounts[puesto] = (puestoCounts[puesto] || 0) + 1;
+      areaCounts[area] = (areaCounts[area] || 0) + 1;
+      departamentoCounts[departamento] = (departamentoCounts[departamento] || 0) + 1;
+    
+      const rowData = [
+        `${employee.nombre} ${employee.apellido}`,
+        employee.dni,
+        employee.legajo,
+        employee.puestos[0]?.nombre || "No asignado",
+        employee.puestos[0]?.area?.nombre || "No asignado",
+        employee.puestos[0]?.area?.departamento?.nombre || "No asignado"
+      ];
+      rows.push(rowData);
     });
+    
+    const table = doc.autoTable({
+      head: [headers],
+      body: rows,
+      startY: 30,
+      theme: 'grid',
+      styles: {
+        fontSize: 11,
+        cellPadding: 4,
+        textColor: [0, 0, 0],
+        valign: 'middle'
+      },
+      columnStyles: {
+        0: { cellWidth: 32 },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 25 },
+        3: { cellWidth: 30 },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 45 }
+      }
+    });
+    
+    const tableHeight = table.autoTableEndPosY(); // Get the table height
+    
+    const countsText = `
+    Cantidad total de empleados:\x1B ${employeesData.length}
+    Cantidad de empleados por puesto:\x1B\n${formatCounts(puestoCounts)}
+    Cantidad de empleados por área:\x1B\n${formatCounts(areaCounts)}
+    Cantidad de empleados por departamento:\x1B\n${formatCounts(departamentoCounts)}
+  `;
+  
+    let startYCounts = tableHeight + 10;
+    
+    // Check if counts text will fit on this page
+    const { h } = doc.getTextDimensions(countsText);
+    const pageHeight = doc.internal.pageSize.height;
+    
+    if (startYCounts + h > pageHeight) {
+      doc.addPage();
+      startYCounts = 10; // Start from the top on a new page
+    }
+    
+    doc.setFontSize(12);
+    doc.text(countsText, 10, startYCounts);
+    
     doc.save("InformeEmpleados.pdf");
   };
+  
+  const formatCounts = (counts) => {
+    let result = '';
+    for (const key in counts) {
+      if (counts.hasOwnProperty(key)) {
+        result += `    • ${key}: ${counts[key]}\n`;
+      }
+    }
+    return result;
+  };
+  
 
   const handleGenerateHealthInsurancePDF = () => {
     const doc = new jsPDF();
-    doc.text("Informe de Obras Sociales", 10, 10);
-    const healthInsurancesData = healthInsuranceData;
-    let startY = 20;
-    healthInsurancesData.forEach((healthInsurance) => {
-      doc.text(`Nombre: ${healthInsurance.nombre}`, 10, startY);
-      doc.text(`Domicilio: ${healthInsurance.domicilio}`, 10, startY + 10);
-      doc.text(`Teléfono: ${healthInsurance.telefono}`, 10, startY + 20);
-      doc.text(`CUIT: ${healthInsurance.cuit}`, 10, startY + 30);
-      startY += 40;
-    });
+  doc.text("Informe de Obras Sociales", 20, 20);
+
+  const headers = ['Nombre', 'Domicilio', 'Teléfono', 'CUIT'];
+  const rows = [];
+
+  healthInsuranceData.forEach((healthInsurance) => {
+    const rowData = [
+      healthInsurance.nombre || "No asignado",
+      healthInsurance.domicilio || "No asignado",
+      healthInsurance.telefono || "No asignado",
+      healthInsurance.cuit || "No asignado"
+    ];
+    rows.push(rowData);
+  });
+
+  const table = doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 30,
+    theme: 'grid',
+    styles: {
+      fontSize: 11,
+      cellPadding: 4,
+      textColor: [0, 0, 0],
+      valign: 'middle'
+    },
+    columnStyles: {
+      0: { cellWidth: 40 },
+      1: { cellWidth: 40 },
+      2: { cellWidth: 40 },
+      3: { cellWidth: 30 }
+    }
+  });
     doc.save("InformeObrasSociales.pdf");
   };
 
   const handleGenerateRolePDF = () => {
     const doc = new jsPDF();
-    doc.text("Informe de Puestos de trabajo", 10, 10);
-    const rolesData = roleData;
-    let startY = 20;
-    rolesData.forEach((role) => {
-      doc.text(`Nombre: ${role.nombre}`, 10, startY);
-      doc.text(`Descripción: ${role.descripcion}`, 10, startY + 10);
-      doc.text(`Sueldo Base: ${role.sueldoBase}`, 10, startY + 20);
-      doc.text(`Inicio: ${role.inicio}`, 10, startY + 30);
-      const areaName =
-        areaData.find((area) => area._id === role.area)?.nombre ||
-        "No asignado";
-      doc.text(`Área: ${areaName}`, 10, startY + 40);
-      startY += 50;
-    });
-    doc.save("InformeRoles.pdf");
+  doc.text("Informe de Puestos de Trabajo", 20, 20);
+
+  const headers = ['Nombre', 'Descripción', 'Sueldo Base', 'Inicio', 'Área'];
+  const rows = [];
+
+  roleData.forEach((role) => {
+    const areaName =
+      areaData.find((area) => area._id === role.area)?.nombre || "No asignado";
+    const rowData = [
+      role.nombre || "No asignado",
+      role.descripcion || "No asignado",
+      role.sueldoBase || "No asignado",
+      role.inicio || "No asignado",
+      areaName
+    ];
+    rows.push(rowData);
+  });
+
+  const table = doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 30,
+    theme: 'grid',
+    styles: {
+      fontSize: 11,
+      cellPadding: 4,
+      textColor: [0, 0, 0],
+      valign: 'middle'
+    },
+    columnStyles: {
+      0: { cellWidth: 40 },
+      1: { cellWidth: 40 },
+      2: { cellWidth: 30 },
+      3: { cellWidth: 30 },
+      4: { cellWidth: 40 }
+    }
+  });
+
+  doc.save("InformePuestosTrabajo.pdf");
   };
 
   const handleGenerateBusinessUnitPDF = () => {
     const doc = new jsPDF();
-    doc.text("Informe de Departamentos de trabajo", 10, 10);
-    const busData = buData;
-    let startY = 20;
-    busData.forEach((bu) => {
-      doc.text(`Nombre: ${bu.nombre}`, 10, startY);
-      doc.text(`Descripción: ${bu.descripcion}`, 10, startY + 10);
-      startY += 20;
-    });
-    doc.save("InformeDepartamentos.pdf");
+  doc.text("Informe de Departamentos de Trabajo", 20, 20);
+
+  const headers = ['Nombre', 'Descripción'];
+  const rows = [];
+
+  buData.forEach((department) => {
+    const rowData = [
+      department.nombre || "No asignado",
+      department.descripcion || "No asignado"
+    ];
+    rows.push(rowData);
+  });
+
+  const table = doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 30,
+    theme: 'grid',
+    styles: {
+      fontSize: 11,
+      cellPadding: 4,
+      textColor: [0, 0, 0],
+      valign: 'middle'
+    },
+    columnStyles: {
+      0: { cellWidth: 40 },
+      1: { cellWidth: 70 }
+    }
+  });
+
+  doc.save("InformeDepartamentos.pdf");
   };
 
   const handleGenerateAreaPDF = () => {
     const doc = new jsPDF();
-    doc.text("Informe de Áreas de trabajo", 10, 10);
-    const areasData = areaData;
-    let startY = 20;
-    areasData.forEach((area) => {
-      doc.text(`Nombre: ${area.nombre}`, 10, startY);
-      doc.text(`Descripción: ${area.descripcion}`, 10, startY + 10);
-      const departamentoName =
-        buData.find((departamento) => departamento._id === area.departamento)
-          ?.nombre || "No asignado";
-      doc.text(`Departamento: ${departamentoName}`, 10, startY + 20);
-      startY += 30;
-    });
-    doc.save("InformeAreas.pdf");
+  doc.text("Informe de Áreas de Trabajo", 20, 20);
+
+  const headers = ['Nombre', 'Descripción', 'Departamento', 'Jefe de Área'];
+  const rows = [];
+
+  areaData.forEach((area) => {
+    const departmentName =
+      buData.find((department) => department._id === area.departamento)?.nombre || 'No asignado';
+      
+      const manager = employeeData.find((employee) => {
+        const employeeRoles = employee.puestos;
+        return employeeRoles.some(role => role.area._id === area._id && role.nombre.toLowerCase().includes('jefe') && role.nombre.toLowerCase().includes('área'));
+      });
+  
+      const managerName = manager ? `${manager.nombre} ${manager.apellido}` : 'No asignado';
+  
+      const rowData = [
+        area.nombre || 'No asignado',
+        area.descripcion || 'No asignado',
+        departmentName,
+        managerName
+      ];
+      rows.push(rowData);
+  });
+
+  const table = doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 30,
+    theme: 'grid',
+    styles: {
+      fontSize: 11,
+      cellPadding: 4,
+      textColor: [0, 0, 0],
+      valign: 'middle'
+    },
+    columnStyles: {
+      0: { cellWidth: 35 },
+      1: { cellWidth: 70 },
+      2: { cellWidth: 35 },
+      3: { cellWidth: 50 } // Adjust the width for the manager column
+    }
+  });
+
+  doc.save('InformeAreas.pdf');
   };
 
   return (
