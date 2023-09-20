@@ -54,7 +54,7 @@ const Members = () => {
           />
           <CardMember
             name="Yuste, Leandro Ivan"
-            legajo="44.686"
+            legajo="46.302"
             email="leandroyuste@alu.frt.utn.edu.ar"
             img={ivan_yuste}
           />
