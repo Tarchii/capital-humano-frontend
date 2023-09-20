@@ -29,7 +29,7 @@ const Areas = () => {
       const departamentosInfo = await axios.get("/departamentos");
       const areas = info.data.areas.map((area) => {
         const departamento = departamentosInfo.data.departamentos.find(
-          (departamento) => departamento._id === area.departamento
+          (departamento) => departamento._id === area.departamento._id
         );
         return {
           ...area,

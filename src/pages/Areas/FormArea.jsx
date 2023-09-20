@@ -11,6 +11,7 @@ const FormArea = ({
   employeeSelected,
   departamentos,
 }) => {
+  console.log(departamentos);
   const onFinish = async (values) => {
     values = values.departamento.hasOwnProperty("id")
       ? {
@@ -113,7 +114,7 @@ const FormArea = ({
       >
         <Select placeholder="Seleccione un departamento">
           {departamentos.map((departamento) => (
-            <Option key={departamento.id} value={departamento.nombre}></Option>
+            <Option key={departamento._id} value={departamento.nombre}></Option>
           ))}
         </Select>
       </Form.Item>

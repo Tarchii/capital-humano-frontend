@@ -213,18 +213,19 @@ const Reports = () => {
     const doc = new jsPDF();
   doc.text("Informe de Puestos de Trabajo", 20, 20);
 
-  const headers = ['Nombre', 'Descripción', 'Sueldo Base', 'Inicio', 'Área'];
+  const headers = ['Nombre', 'Descripción', 'Sueldo', 'Inicio', 'Área','Dpto'];
   const rows = [];
 
   roleData.forEach((role) => {
-    const areaName =
-      areaData.find((area) => area._id === role.area)?.nombre || "No asignado";
+    const area = areaData.find((a) => a._id === role.area._id);
+
     const rowData = [
       role.nombre || "No asignado",
       role.descripcion || "No asignado",
       role.sueldoBase || "No asignado",
       role.inicio || "No asignado",
-      areaName
+      area? area.nombre:"No asignado",
+      area? area.departamento.nombre :"No asignado",
     ];
     rows.push(rowData);
   });
@@ -241,14 +242,22 @@ const Reports = () => {
       valign: 'middle'
     },
     columnStyles: {
-      0: { cellWidth: 40 },
+      0: { cellWidth: 35 },
       1: { cellWidth: 40 },
-      2: { cellWidth: 30 },
+      2: { cellWidth: 25 },
       3: { cellWidth: 30 },
-      4: { cellWidth: 40 }
+      4: { cellWidth: 35 },
+      5: { cellWidth: 30 },
     }
   });
 
+  const tableHeight = table.autoTableEndPosY();
+  let startYCounts = tableHeight + 10;
+
+  const countsText = `
+  Cantidad total de Puestos de Trabajo:\x1B ${roleData.length}
+`;
+  doc.text(countsText, 10,startYCounts);
   doc.save("InformePuestosTrabajo.pdf");
   };
 
@@ -256,13 +265,19 @@ const Reports = () => {
     const doc = new jsPDF();
   doc.text("Informe de Departamentos de Trabajo", 20, 20);
 
-  const headers = ['Nombre', 'Descripción'];
+  const headers = ['Nombre', 'Descripción','Área','Puestos'];
   const rows = [];
-
+  
   buData.forEach((department) => {
+    const areas = areaData.filter((area) => area.departamento._id === department._id);
+
+    const puestos = roleData.filter((p)=> p.area.departamento === department._id)
+    console.log(puestos);
     const rowData = [
       department.nombre || "No asignado",
-      department.descripcion || "No asignado"
+      department.descripcion || "No asignado",
+      areas.length>0 ? areas.map(a=>a.nombre) : "No asignado",
+      puestos.length>0 ? puestos.map(a=>a.nombre) : "No asignado",
     ];
     rows.push(rowData);
   });
@@ -279,8 +294,10 @@ const Reports = () => {
       valign: 'middle'
     },
     columnStyles: {
-      0: { cellWidth: 40 },
-      1: { cellWidth: 70 }
+      0: { cellWidth: 30 },
+      1: { cellWidth: 40 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 80 }
     }
   });
 
@@ -296,7 +313,7 @@ const Reports = () => {
 
   areaData.forEach((area) => {
     const departmentName =
-      buData.find((department) => department._id === area.departamento)?.nombre || 'No asignado';
+      buData.find((department) => department._id === area.departamento._id)?.nombre || 'No asignado';
       
       const manager = employeeData.find((employee) => {
         const employeeRoles = employee.puestos;

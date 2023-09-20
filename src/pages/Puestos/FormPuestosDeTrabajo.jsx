@@ -11,6 +11,7 @@ const FormPuestosDeTrabajo = ({
   getData,
   puestoSelected,
 }) => {
+  console.log(areas);
   const onFinish = async (values) => {
     values = values.area.hasOwnProperty("id")
       ? {
@@ -98,6 +99,7 @@ const FormPuestosDeTrabajo = ({
         <Input />
       </Form.Item>
 
+      
       <Form.Item
         label="Area"
         name="area"
@@ -108,9 +110,9 @@ const FormPuestosDeTrabajo = ({
           },
         ]}
       >
-        <Select placeholder="Seleccione un area">
-          {areas.map((area) => (
-            <Option key={area.id} value={area.nombre}></Option>
+        <Select placeholder="Seleccione un departamento">
+          {areas.map((a) => (
+            <Option key={a._id} value={a.nombre}></Option>
           ))}
         </Select>
       </Form.Item>

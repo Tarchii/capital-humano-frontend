@@ -30,7 +30,7 @@ const Puestos = () => {
       const empleadosInfo = await axios.get("/empleados");
       const puestos = info.data.puestos.map((puesto) => {
         const area = areasInfo.data.areas.find(
-          (area) => area._id === puesto.area
+          (area) => area._id === puesto.area._id
         );
         const empleadosAsociados = empleadosInfo.data.empleados
     .filter((empleado) =>
