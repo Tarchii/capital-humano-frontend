@@ -44,7 +44,9 @@ const Puestos = () => {
         return {
           ...puesto,
           area: {
+            id: area._id,
             nombre: area.nombre,
+            value: area.nombre,
           },
           empleados : empleadosAsociados,
         };

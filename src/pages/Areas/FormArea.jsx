@@ -11,7 +11,7 @@ const FormArea = ({
   employeeSelected,
   departamentos,
 }) => {
-  console.log(departamentos);
+  
   const onFinish = async (values) => {
     values = values.departamento.hasOwnProperty("id")
       ? {

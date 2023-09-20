@@ -11,7 +11,7 @@ const FormPuestosDeTrabajo = ({
   getData,
   puestoSelected,
 }) => {
-  console.log(areas);
+  
   const onFinish = async (values) => {
     values = values.area.hasOwnProperty("id")
       ? {
